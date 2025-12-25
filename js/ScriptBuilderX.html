@@ -1,0 +1,3044 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Janitor AI ScriptBuilder X</title>
+  <style>
+    body { font-family: sans-serif; font-size: 14px; margin: 0; }
+    h1 { margin: 16px; }
+    h2 { margin-top: 16px; }
+    .layout {
+      display: flex;
+      flex-direction: row;
+      align-items: stretch;
+      justify-content: space-between;
+    }
+    .col {
+      padding: 12px 16px 24px 16px;
+      box-sizing: border-box;
+    }
+    .col-left { width: 58%; border-right: 1px solid var(--border); }
+    .col-right { width: 42%; }
+
+    .section {
+      margin-bottom: 24px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .inline {
+      display: inline-block;
+      margin-right: 8px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 60px;
+    }
+
+    .grow-textarea {
+      min-height: 80px;
+    }
+
+    .row {
+      margin-bottom: 8px;
+    }
+
+    .btn {
+      padding: 4px 8px;
+      margin-right: 6px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .small-label {
+      font-size: 12px;
+      color: #555;
+      white-space: pre-wrap;
+    }
+
+    .trigger-block {
+      border: 1px solid #999;
+      padding: 8px;
+      margin-bottom: 8px;
+      background: #fafafa;
+    }
+
+    .trigger-block-header {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      margin-bottom: 4px;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+    .trigger-block-header span {
+      font-weight: bold;
+    }
+
+    .block-section-title {
+      font-weight: bold;
+      margin-top: 6px;
+    }
+
+    .group-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+
+    .condition-group {
+      border: 1px dashed #666;
+      padding: 6px;
+      margin: 6px 0;
+      background: #f0f0f0;
+    }
+
+    .condition-row {
+      border: 1px dashed #aaa;
+      padding: 4px;
+      margin: 4px 0;
+      background: #fff;
+    }
+
+    .condition-row select,
+    .condition-row input[type="number"],
+    .condition-row input[type="text"] {
+      margin-right: 4px;
+    }
+
+    .condDetails {
+      margin-top: 4px;
+    }
+
+    .derived-row {
+      border: 1px dashed #aaa;
+      padding: 4px;
+      margin: 4px 0;
+      background: #f9f9f9;
+    }
+
+    pre {
+      background: #111;
+      color: #0f0;
+      padding: 8px;
+      overflow: auto;
+      font-size: 12px;
+    }
+    code {
+      background: #eee;
+      padding: 0 3px;
+    }
+  
+/* ===== Dark (Studio-ish) overrides + query feel ===== */
+:root{
+  --bg:#0f1116;
+  --panel:#171a21;
+  --panel2:#1d2230;
+  --border:rgba(255,255,255,0.12);
+  --text:#e6e9f2;
+  --muted:#a8afc3;
+  --accent:#6b7cff;
+}
+
+body{ background:var(--bg); color:var(--text); }
+.col-left{ border-right:1px solid var(--border); }
+.small-label{ color:var(--muted); }
+.section{
+  background: rgba(255,255,255,0.04);
+  border:1px solid var(--border);
+  border-radius:14px;
+}
+h1,h2,h3{ color:var(--text); }
+
+input, select, textarea{
+  background:#0b0d12;
+  color:var(--text);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:6px 8px;
+  box-sizing:border-box;
+}
+textarea{ resize:vertical; }
+.btn{
+  background:rgba(255,255,255,0.06);
+  color:var(--text);
+  border:1px solid var(--border);
+  border-radius:10px;
+}
+.btn:hover{ border-color:rgba(255,255,255,0.20); }
+
+.trigger-block{ background: rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:12px; }
+.condition-group{ background: rgba(255,255,255,0.03); border:1px dashed rgba(255,255,255,0.18); border-radius:12px; }
+.condition-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:6px 8px;
+  border:1px dashed rgba(255,255,255,0.16);
+  border-radius:10px;
+  background: rgba(255,255,255,0.02);
+}
+.condition-row .inline{ display:flex; align-items:center; gap:6px; margin-right:0; }
+.condDetails{ display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin-top:0; margin-left:8px; }
+
+.derived-row{
+  border:1px dashed rgba(255,255,255,0.16);
+  background: rgba(255,255,255,0.02);
+  border-radius:12px;
+}
+
+pre{
+  background:#0b0d12;
+  color:var(--text);
+  border:1px solid var(--border);
+  border-radius:12px;
+}
+code{ background:rgba(255,255,255,0.10); color:var(--text); border-radius:6px; }
+
+.section-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:8px;
+}
+.harness-divider{
+  margin-top:12px;
+  padding-top:10px;
+  border-top:1px solid var(--border);
+  color:var(--muted);
+  font-weight:600;
+  letter-spacing:0.2px;
+}
+.harness-results{
+  margin-top:8px;
+  min-height:60px;
+  max-height:240px;
+  overflow:auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size:12px;
+}
+
+</style>
+</head>
+<body>
+
+  <h1>JanitorAI ScriptBuilder X</h1>
+
+  <div class="layout">
+    <!-- LEFT: Lists + Derived + Trigger Blocks -->
+    <div class="col col-left">
+
+      <!-- LISTS -->
+      <div class="section">
+        <h2>Lists (words, phrases, numbers)</h2>
+
+        <div>
+          <label>Existing Lists:
+            <select id="existingListsSelect">
+              <option value="">-- None --</option>
+            </select>
+          </label>
+          <button id="btnNewList" class="btn">New List</button>
+        </div>
+
+        <div>
+          <label>List Name:<br>
+            <input type="text" id="listNameInput" placeholder="e.g. affectionWords">
+          </label>
+        </div>
+
+        <div>
+          <label>List Description (optional):<br>
+            <textarea id="listDescriptionInput" placeholder="What is this list used for?"></textarea>
+          </label>
+        </div>
+
+        <div>
+          <span class="small-label">Items (one per line):</span><br>
+          <textarea id="listItemsInput" placeholder="love you&#10;like you&#10;crush on you"></textarea>
+        </div>
+
+        <button id="btnSaveList" class="btn">Save / Update List</button>
+
+        <h3>Preview: All Lists</h3>
+        <div id="listsDisplay"></div>
+      </div>
+
+      <!-- DERIVED VALUES -->
+      <div class="section">
+        <h2>Derived Values (from history)</h2>
+        <p class="small-label">
+          Derived values are recomputed every call from <code>normHistory</code>. They are numeric stats like:<br>
+          <code>derived["affectionCount"] = countMatchesInHistory(normHistory, affectionWords, 10)</code>.
+        </p>
+
+        <div id="derivedContainer"></div>
+        <button id="btnAddDerived" class="btn">Add Derived Value</button>
+      </div>
+
+      <!-- TRIGGER BLOCKS -->
+      <div class="section">
+        <h2>Trigger Blocks (Multiple IF / ELSEIF / ELSE chains)</h2>
+        <p class="small-label">
+          Each <strong>IF</strong> starts a new trigger chain. You can follow it with
+          <strong>ELSE IF</strong> and an optional <strong>ELSE</strong>. You can add
+          multiple IF chains in one file.
+        </p>
+
+        <div class="row">
+          <button id="btnAddIfBlock" class="btn">Add IF Block</button>
+          <button id="btnAddElseIfBlock" class="btn">Add ELSE IF Block</button>
+          <button id="btnAddElseBlock" class="btn">Add ELSE Block</button>
+        </div>
+
+        <div class="row" style="margin-top: 8px;">
+          <label class="small-label">
+            Load template:
+            <select id="templateSelect">
+              <option value="">-- None --</option>
+              <option value="affection_escalation">Affection escalation</option>
+              <option value="safety_alert">Safety alert</option>
+            </select>
+          </label>
+          <button id="btnApplyTemplate" class="btn" style="margin-left: 8px;">Apply Template</button>
+        </div>
+
+        <div id="triggerBlocksContainer"></div>
+
+        <div style="margin-top: 8px;">
+          <button id="btnGenerateCode" class="btn">Generate Trigger Code</button>
+        </div>
+        <div id="validationOutput" class="small-label" style="margin-top: 4px;"></div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Generated Code + Debug -->
+    <div class="col col-right">
+
+      <div class="section">
+        <h2>Test Harness (Evaluator)</h2>
+        <p class="small-label">
+          Build a fake <code>context</code> using your test messages, then simulate all blocks in order with IF/ELSEIF/ELSE chaining.
+        </p>
+
+        <div class="row">
+          <label class="small-label">Initial Personality</label>
+          <textarea id="thPersonality" class="grow-textarea" placeholder="Initial personality..."></textarea>
+        </div>
+
+        <div class="row">
+          <label class="small-label">Initial Scenario</label>
+          <textarea id="thScenario" class="grow-textarea" placeholder="Initial scenario..."></textarea>
+        </div>
+
+        <div class="row">
+          <label class="small-label">Test Messages (context.chat.last_messages): Bottom message is newest, just like in chat</label>
+          <div id="thMessages"></div>
+          <button id="thAddMsg" class="btn" type="button">Add Test Message</button>
+        </div>
+
+        <div class="row" style="margin-top: 8px;">
+          <button id="thRun" class="btn" type="button">Run Test</button>
+          <button id="thResetResults" class="btn" type="button">Reset Results (keep fields)</button>
+          <button id="thResetAll" class="btn" type="button">Reset All (evaluator only)</button>
+        </div>
+
+        
+        <div class="harness-divider">
+          <span>Test Harness</span>
+        </div>
+        <pre id="thResults" class="harness-results" style="display:none;"></pre>
+
+      <div class="section">
+        <h2>Generated JanitorAI Trigger Code</h2>
+        <p class="small-label">
+          Copy-paste this into your advanced script. It assumes a standard
+          <code>context</code> object from JanitorAI (with <code>context.chat.last_messages</code>
+          and <code>context.character.*</code>).
+        </p>
+        <pre id="generatedCode">
+// Add lists, derived values, and trigger blocks, then click "Generate Trigger Code".
+        </pre>
+      </div>
+
+      <div class="section" id="debugSection" data-collapsed="true">
+        <div class="section-head">
+          <h2 style="margin:0;">Debug: Current Config</h2>
+          <button class="btn" type="button" id="btnToggleDebug">Expand</button>
+        </div>
+        <div class="section-body" style="display:none;">
+        <p class="small-label">
+          Derived values and block summaries, followed by the raw JSON config used for code generation.
+        </p>
+        <pre id="configDebug"></pre>
+        </div>
+      </div>
+
+</div>
+
+</div>
+  </div>
+
+  <script>
+    // ==========================
+    // APP STATE
+    // ==========================
+
+    var appState = {
+      lists: [],     // { id, label, description, items[] }
+      derived: [],   // { key, description, listId, windowSize }
+      blocks: []     // { type, label, description, join, conditions[node[]], actions[] }
+    };
+
+    var currentListId = null;
+
+    // ==========================
+    // SIMPLE TEMPLATES (Tier 1 examples)
+    // ==========================
+
+    function getListById(listId) {
+      var i;
+      for (i = 0; i < appState.lists.length; i++) {
+        if (appState.lists[i].id === listId) return appState.lists[i];
+      }
+      return null;
+    }
+
+    function applyTemplate(key) {
+      if (key === "affection_escalation") {
+        var existing = getListById("affectionWords");
+        if (!existing) {
+          existing = {
+            id: "affectionWords",
+            label: "Affection words",
+            description: "Soft affection / romantic phrases.",
+            items: ["love you", "like you", "have a crush on you"]
+          };
+          appState.lists.push(existing);
+        }
+        refreshExistingListsSelect();
+        refreshListSelectsInConditions();
+        refreshListSelectsInDerived();
+        refreshListsDisplay();
+
+        addTriggerBlock("if");
+        var container = document.getElementById("triggerBlocksContainer");
+        var nodes = container.getElementsByClassName("trigger-block");
+        var block = nodes[nodes.length - 1];
+
+        var lbl = block.getElementsByClassName("blockLabelInput")[0];
+        if (lbl) lbl.value = "Affection escalator (example)";
+
+        var desc = block.getElementsByClassName("blockDescInput")[0];
+        if (desc) desc.value = "Example: use affectionWords list to shift personality tone.";
+
+        var actionsDiv = block.getElementsByClassName("blockActions")[0];
+        if (actionsDiv) {
+          addActionRowTo(actionsDiv);
+          var rows = actionsDiv.getElementsByClassName("action-row");
+          var row = rows[rows.length - 1];
+
+          var actionLabelInput = row.getElementsByClassName("actionLabel")[0];
+          if (actionLabelInput) {
+            actionLabelInput.value = "Soft affectionate response";
+          }
+
+          var textArea = row.getElementsByClassName("actionText")[0];
+          if (textArea) {
+            textArea.value = "\nThey respond with a slightly more affectionate tone.";
+          }
+        }
+      } else if (key === "safety_alert") {
+        var existing2 = getListById("safetyWords");
+        if (!existing2) {
+          existing2 = {
+            id: "safetyWords",
+            label: "Safety words",
+            description: "Phrases indicating self-harm or severe distress.",
+            items: ["kill myself", "end it all", "no reason to live"]
+          };
+          appState.lists.push(existing2);
+        }
+        refreshExistingListsSelect();
+        refreshListSelectsInConditions();
+        refreshListSelectsInDerived();
+        refreshListsDisplay();
+
+        addTriggerBlock("if");
+        var container2 = document.getElementById("triggerBlocksContainer");
+        var nodes2 = container2.getElementsByClassName("trigger-block");
+        var block2 = nodes2[nodes2.length - 1];
+
+        var lbl2 = block2.getElementsByClassName("blockLabelInput")[0];
+        if (lbl2) lbl2.value = "Safety alert (example)";
+
+        var desc2 = block2.getElementsByClassName("blockDescInput")[0];
+        if (desc2) desc2.value = "Example: add safety guidance when user uses crisis phrases.";
+
+        var actionsDiv2 = block2.getElementsByClassName("blockActions")[0];
+        if (actionsDiv2) {
+          addActionRowTo(actionsDiv2);
+          var rows2 = actionsDiv2.getElementsByClassName("action-row");
+          var row2 = rows2[rows2.length - 1];
+
+          var actionLabelInput2 = row2.getElementsByClassName("actionLabel")[0];
+          if (actionLabelInput2) {
+            actionLabelInput2.value = "Safety guidance";
+          }
+
+          var textArea2 = row2.getElementsByClassName("actionText")[0];
+          if (textArea2) {
+            textArea2.value = "\nThey respond with calm, supportive, and safety-oriented guidance.";
+          }
+        }
+      }
+      buildBlocksFromUI();
+      buildDerivedFromUI();
+    }
+
+    // ==========================
+    // UTILS
+    // ==========================
+
+    function sanitizeId(text) {
+      var id = String(text || "").trim();
+      if (!id) id = "list_" + new Date().getTime();
+      id = id.replace(/\s+/g, "_").replace(/[^a-zA-Z0-9_]/g, "");
+      if (!id) id = "list_" + new Date().getTime();
+      return id;
+    }
+
+    function addOption(select, value, text) {
+      var opt = document.createElement("option");
+      opt.value = value;
+      opt.text = text;
+      select.appendChild(opt);
+    }
+
+    function describeSingleNodeSummary(node) {
+      if (!node) return "true";
+
+      if (node.nodeType === "group") {
+        var parts = [];
+        var children = node.children || [];
+        var i;
+        for (i = 0; i < children.length; i++) {
+          parts.push(describeSingleNodeSummary(children[i]));
+        }
+        var joinWord = (node.join === "or") ? " OR " : " AND ";
+        var inner = parts.join(joinWord);
+        if (!inner) inner = "always true";
+        if (node.not) {
+          return "NOT(" + inner + ")";
+        }
+        return "(" + inner + ")";
+      }
+
+      var base = "";
+      if (node.type === "anyInList") {
+        base = "anyInList(" + (node.listId || "?") + ")";
+      } else if (node.type === "noneInList") {
+        base = "noneInList(" + (node.listId || "?") + ")";
+      } else if (node.type === "countInHistory") {
+        base = "count(" + (node.listId || "?") + ", last " +
+          (node.windowSize || "N") + ") " + (node.op || "==") +
+          " " + (node.threshold || 0);
+      } else if (node.type === "messageCountComparison") {
+        base = "messageCount " + (node.op || "==") + " " + (node.threshold || 0);
+      } else if (node.type === "personalityContains") {
+        base = "personality contains \"" + (node.text || "") + "\"";
+      } else if (node.type === "scenarioContains") {
+        base = "scenario contains \"" + (node.text || "") + "\"";
+      } else if (node.type === "messageHistoryContains") {
+        base = "history contains \"" + (node.text || "") + "\" (last " + (node.windowSize || "N") + ")";
+      } else if (node.type === "memoryNumberComparison") {
+        base = "memory[" + (node.memKey || "") + "] " +
+          (node.op || "==") + " " + (node.threshold || 0);
+      } else if (node.type === "memoryStringContains") {
+        base = "memory[" + (node.memKey || "") + "] contains \"" + (node.text || "") + "\"";
+      } else if (node.type === "derivedNumberComparison") {
+        base = "derived[" + (node.derivedKey || "") + "] " +
+          (node.op || "==") + " " + (node.threshold || 0);
+      } else {
+        base = "(unknown condition)";
+      }
+
+      if (node.not) {
+        return "NOT(" + base + ")";
+      }
+      return base;
+    }
+
+    function describeConditionBlockSummary(block) {
+      if (block.type === "else") {
+        return "ELSE (no condition)";
+      }
+      var nodes = block.conditions || [];
+      if (!nodes.length) {
+        return "No conditions (always true)";
+      }
+      var joinWord = (block.join === "or") ? " OR " : " AND ";
+      var parts = [];
+      var i;
+      for (i = 0; i < nodes.length; i++) {
+        parts.push(describeSingleNodeSummary(nodes[i]));
+      }
+      return parts.join(joinWord);
+    }
+
+    function refreshDebug() {
+      var debugEl = document.getElementById("configDebug");
+      if (!debugEl) return;
+
+      var lines = [];
+
+      // Derived summaries
+      lines.push("Derived values:");
+      if (appState.derived && appState.derived.length) {
+        var d;
+        for (d = 0; d < appState.derived.length; d++) {
+          var dv = appState.derived[d];
+          var s = "  derived[" + (dv.key || "?") + "] = countMatchesInHistory(normHistory, " +
+            (dv.listId || "?") + ", " + (dv.windowSize || "N") + ")";
+          if (dv.description) {
+            s += " // " + dv.description;
+          }
+          lines.push(s);
+        }
+      } else {
+        lines.push("  (none)");
+      }
+
+      lines.push("");
+      lines.push("Block condition summaries:");
+      if (appState.blocks && appState.blocks.length) {
+        var i;
+        for (i = 0; i < appState.blocks.length; i++) {
+          var block = appState.blocks[i];
+          var label = block.label || ("Block #" + (i + 1) + " (" + (block.type || "if") + ")");
+          var summary = describeConditionBlockSummary(block);
+          lines.push(" - " + label + ": " + summary);
+        }
+      } else {
+        lines.push(" (none)");
+      }
+
+      lines.push("");
+      lines.push("Raw config:\n" + JSON.stringify(appState, null, 2));
+
+      debugEl.textContent = lines.join("\n");
+    }
+
+    function refreshListsDisplay() {
+      var container = document.getElementById("listsDisplay");
+      container.innerHTML = "";
+      if (!appState.lists.length) {
+        container.innerHTML = "<em>No lists defined yet.</em>";
+        return;
+      }
+      var i;
+      for (i = 0; i < appState.lists.length; i++) {
+        var list = appState.lists[i];
+        var h = document.createElement("h4");
+        h.appendChild(document.createTextNode(list.label + " (id: " + list.id + ")"));
+        container.appendChild(h);
+
+        if (list.description) {
+          var p = document.createElement("p");
+          p.className = "small-label";
+          p.appendChild(document.createTextNode(list.description));
+          container.appendChild(p);
+        }
+
+        var pre = document.createElement("pre");
+        pre.appendChild(document.createTextNode(JSON.stringify(list.items, null, 2)));
+        container.appendChild(pre);
+      }
+    }
+
+    // ==========================
+    // LIST UI
+    // ==========================
+
+    function clearListEditor() {
+      document.getElementById("listNameInput").value = "";
+      document.getElementById("listDescriptionInput").value = "";
+      document.getElementById("listItemsInput").value = "";
+    }
+
+    function loadListIntoEditor(listId) {
+      var list = getListById(listId);
+      if (!list) return;
+      document.getElementById("listNameInput").value = list.label;
+      document.getElementById("listDescriptionInput").value = list.description || "";
+      document.getElementById("listItemsInput").value = list.items.join("\n");
+    }
+
+    function saveListFromEditor() {
+      var name = document.getElementById("listNameInput").value;
+      var desc = document.getElementById("listDescriptionInput").value;
+      var itemsText = document.getElementById("listItemsInput").value;
+
+      var lines = itemsText.split(/\r?\n/);
+      var items = [];
+      var i;
+      var trimmed;
+      for (i = 0; i < lines.length; i++) {
+        trimmed = lines[i].trim();
+        if (trimmed) items.push(trimmed);
+      }
+
+      var listId = currentListId;
+      if (!listId) {
+        listId = sanitizeId(name);
+      }
+
+      var existing = getListById(listId);
+      if (!existing) {
+        existing = {
+          id: listId,
+          label: name || listId,
+          description: desc || "",
+          items: items
+        };
+        appState.lists.push(existing);
+      } else {
+        existing.label = name || listId;
+        existing.description = desc || "";
+        existing.items = items;
+      }
+
+      currentListId = listId;
+      refreshExistingListsSelect();
+      refreshListSelectsInConditions();
+      refreshListSelectsInDerived();
+      refreshListsDisplay();
+      refreshDebug();
+    }
+
+    function refreshExistingListsSelect() {
+      var sel = document.getElementById("existingListsSelect");
+      var oldValue = sel.value;
+      sel.innerHTML = '<option value="">-- None --</option>';
+
+      var i;
+      for (i = 0; i < appState.lists.length; i++) {
+        var list = appState.lists[i];
+        var opt = document.createElement("option");
+        opt.value = list.id;
+        opt.text = list.label + " (" + list.id + ")";
+        sel.appendChild(opt);
+      }
+
+      if (oldValue) {
+        sel.value = oldValue;
+      } else {
+        sel.value = "";
+      }
+    }
+
+    function bindListUI() {
+      var sel = document.getElementById("existingListsSelect");
+      var btnNew = document.getElementById("btnNewList");
+      var btnSave = document.getElementById("btnSaveList");
+
+      sel.onchange = function () {
+        var id = sel.value;
+        if (!id) {
+          currentListId = null;
+          clearListEditor();
+          return;
+        }
+        currentListId = id;
+        loadListIntoEditor(id);
+      };
+
+      btnNew.onclick = function () {
+        currentListId = null;
+        clearListEditor();
+      };
+
+      btnSave.onclick = function () {
+        saveListFromEditor();
+      };
+    }
+
+    function refreshListSelectsInConditions() {
+      var container = document.getElementById("triggerBlocksContainer");
+      var selects = container.getElementsByClassName("condListSelect");
+      var i;
+      for (i = 0; i < selects.length; i++) {
+        var sel = selects[i];
+        var current = sel.value;
+        sel.innerHTML = "";
+        var opt = document.createElement("option");
+        opt.value = "";
+        opt.text = "-- choose list --";
+        sel.appendChild(opt);
+
+        var j;
+        for (j = 0; j < appState.lists.length; j++) {
+          var list = appState.lists[j];
+          var o = document.createElement("option");
+          o.value = list.id;
+          o.text = list.label + " (" + list.id + ")";
+          sel.appendChild(o);
+        }
+
+        if (current) {
+          sel.value = current;
+        } else {
+          sel.value = "";
+        }
+      }
+    }
+
+    // ==========================
+    // DERIVED VALUES UI
+    // ==========================
+
+    function refreshListSelectsInDerived() {
+      var container = document.getElementById("derivedContainer");
+      var selects = container.getElementsByClassName("derivedListSelect");
+      var i;
+      for (i = 0; i < selects.length; i++) {
+        var sel = selects[i];
+        var current = sel.value;
+        sel.innerHTML = "";
+        var opt = document.createElement("option");
+        opt.value = "";
+        opt.text = "-- choose list --";
+        sel.appendChild(opt);
+
+        var j;
+        for (j = 0; j < appState.lists.length; j++) {
+          var list = appState.lists[j];
+          var o = document.createElement("option");
+          o.value = list.id;
+          o.text = list.label + " (" + list.id + ")";
+          sel.appendChild(o);
+        }
+
+        if (current) {
+          sel.value = current;
+        } else {
+          sel.value = "";
+        }
+      }
+    }
+
+    function addDerivedRow() {
+      var container = document.getElementById("derivedContainer");
+      var row = document.createElement("div");
+      row.className = "derived-row";
+
+      var keyLabel = document.createElement("label");
+      keyLabel.className = "inline";
+      keyLabel.appendChild(document.createTextNode("Derived key: "));
+      var keyInput = document.createElement("input");
+      keyInput.type = "text";
+      keyInput.className = "derivedKeyInput";
+      keyInput.placeholder = "e.g. affectionCount";
+      keyLabel.appendChild(keyInput);
+      row.appendChild(keyLabel);
+
+      var descLabel = document.createElement("label");
+      descLabel.className = "inline";
+      descLabel.style.marginLeft = "8px";
+      descLabel.appendChild(document.createTextNode("Description: "));
+      var descInput = document.createElement("input");
+      descInput.type = "text";
+      descInput.className = "derivedDescInput";
+      descInput.placeholder = "e.g. count affectionWords in last 10 messages";
+      descLabel.appendChild(descInput);
+      row.appendChild(descLabel);
+
+      var listLabel = document.createElement("label");
+      listLabel.className = "inline";
+      listLabel.style.marginTop = "4px";
+      listLabel.appendChild(document.createTextNode("Search from: "));
+      var listSelect = document.createElement("select");
+      listSelect.className = "derivedListSelect";
+      listLabel.appendChild(listSelect);
+      row.appendChild(listLabel);
+
+      var winLabel = document.createElement("label");
+      winLabel.className = "inline";
+      winLabel.style.marginLeft = "8px";
+      winLabel.appendChild(document.createTextNode("Last N messages: "));
+      var winInput = document.createElement("input");
+      winInput.type = "number";
+      winInput.className = "derivedWindowInput";
+      winInput.value = "10";
+      winLabel.appendChild(winInput);
+      row.appendChild(winLabel);
+
+      var btnRemove = document.createElement("button");
+      btnRemove.type = "button";
+      btnRemove.className = "btn inline";
+      btnRemove.appendChild(document.createTextNode("Remove"));
+      btnRemove.onclick = function () {
+        container.removeChild(row);
+        buildDerivedFromUI();
+      };
+      row.appendChild(btnRemove);
+
+      container.appendChild(row);
+      refreshListSelectsInDerived();
+    }
+
+    function bindDerivedUI() {
+      var btnAdd = document.getElementById("btnAddDerived");
+      if (btnAdd) {
+        btnAdd.onclick = function () {
+          addDerivedRow();
+        };
+      }
+    }
+
+    function buildDerivedFromUI() {
+      var container = document.getElementById("derivedContainer");
+      var rows = container.getElementsByClassName("derived-row");
+      var derived = [];
+      var i;
+      for (i = 0; i < rows.length; i++) {
+        var row = rows[i];
+        var keyInput = row.getElementsByClassName("derivedKeyInput")[0];
+        var descInput = row.getElementsByClassName("derivedDescInput")[0];
+        var listSelect = row.getElementsByClassName("derivedListSelect")[0];
+        var winInput = row.getElementsByClassName("derivedWindowInput")[0];
+
+        var key = keyInput ? keyInput.value : "";
+        var desc = descInput ? descInput.value : "";
+        var listId = listSelect ? listSelect.value : "";
+        var windowSize = winInput ? (parseInt(winInput.value, 10) || 10) : 10;
+
+        if (!key || !listId) {
+          continue;
+        }
+
+        derived.push({
+          key: key,
+          description: desc,
+          listId: listId,
+          windowSize: windowSize
+        });
+      }
+      appState.derived = derived;
+      refreshDebug();
+      refreshDerivedSelectsInConditions();
+    }
+
+    // ==========================
+    // TRIGGER BLOCKS UI
+    // ==========================
+
+    function bindTriggerUI() {
+      document.getElementById("btnAddIfBlock").onclick = function () {
+        addTriggerBlock("if");
+      };
+      document.getElementById("btnAddElseIfBlock").onclick = function () {
+        addTriggerBlock("elseif");
+      };
+      document.getElementById("btnAddElseBlock").onclick = function () {
+        addTriggerBlock("else");
+      };
+
+      var tmplBtn = document.getElementById("btnApplyTemplate");
+      if (tmplBtn) {
+        tmplBtn.onclick = function () {
+          var sel = document.getElementById("templateSelect");
+          var key = sel ? sel.value : "";
+          if (!key) return;
+          applyTemplate(key);
+        };
+      }
+
+      document.getElementById("btnGenerateCode").onclick = function () {
+        buildDerivedFromUI();
+        buildBlocksFromUI();
+        var messages = validateConfig();
+        var out = document.getElementById("validationOutput");
+        if (out) {
+          if (messages.length) {
+            out.textContent = "Warnings:\n- " + messages.join("\n- ");
+          } else {
+            out.textContent = "No validation warnings.";
+          }
+        }
+        generateCode();
+      };
+    }
+
+    function addTriggerBlock(type) {
+      var container = document.getElementById("triggerBlocksContainer");
+      var block = document.createElement("div");
+      block.className = "trigger-block";
+      block.setAttribute("data-block-type", type);
+
+      var header = document.createElement("div");
+      header.className = "trigger-block-header";
+
+      var labelSpan = document.createElement("span");
+      labelSpan.textContent = (type === "if") ? "IF" : (type === "elseif" ? "ELSE IF" : "ELSE");
+      header.appendChild(labelSpan);
+
+      // Block label
+      var nameInput = document.createElement("input");
+      nameInput.type = "text";
+      nameInput.className = "blockLabelInput";
+      nameInput.placeholder = "Block label (optional)";
+      nameInput.style.marginLeft = "8px";
+      header.appendChild(nameInput);
+
+      // Block description
+      var descInput = document.createElement("input");
+      descInput.type = "text";
+      descInput.className = "blockDescInput";
+      descInput.placeholder = "Short description (optional)";
+      descInput.style.marginLeft = "8px";
+      descInput.style.minWidth = "120px";
+      header.appendChild(descInput);
+
+      // Move up
+      var moveUpBtn = document.createElement("button");
+      moveUpBtn.type = "button";
+      moveUpBtn.className = "btn";
+      moveUpBtn.textContent = "↑";
+      moveUpBtn.onclick = function () {
+        var parent = block.parentNode;
+        if (!parent) return;
+        var prev = block.previousElementSibling;
+        if (prev) {
+          parent.insertBefore(block, prev);
+        }
+      };
+      header.appendChild(moveUpBtn);
+
+      // Move down
+      var moveDownBtn = document.createElement("button");
+      moveDownBtn.type = "button";
+      moveDownBtn.className = "btn";
+      moveDownBtn.textContent = "↓";
+      moveDownBtn.onclick = function () {
+        var parent = block.parentNode;
+        if (!parent) return;
+        var next = block.nextElementSibling;
+        if (next) {
+          parent.insertBefore(block, block.nextSibling);
+        }
+      };
+      header.appendChild(moveDownBtn);
+
+      // Collapse/expand
+      var toggleBtn = document.createElement("button");
+      toggleBtn.type = "button";
+      toggleBtn.className = "btn";
+      toggleBtn.textContent = "Collapse";
+      toggleBtn.onclick = function () {
+        var collapsed = block.getAttribute("data-collapsed") === "true";
+        collapsed = !collapsed;
+        block.setAttribute("data-collapsed", collapsed ? "true" : "false");
+        var i;
+        for (i = 0; i < block.children.length; i++) {
+          var child = block.children[i];
+          if (child === header) continue;
+          child.style.display = collapsed ? "none" : "";
+        }
+        toggleBtn.textContent = collapsed ? "Expand" : "Collapse";
+      };
+      header.appendChild(toggleBtn);
+
+      // Remove block
+      var removeBtn = document.createElement("button");
+      removeBtn.type = "button";
+      removeBtn.className = "btn";
+      removeBtn.textContent = "Remove Block";
+      removeBtn.onclick = function () {
+        container.removeChild(block);
+        buildBlocksFromUI();
+      };
+      header.appendChild(removeBtn);
+
+      block.appendChild(header);
+
+      // IF/ELSEIF: join + conditions
+      if (type !== "else") {
+        var joinLabel = document.createElement("label");
+        joinLabel.className = "inline";
+        joinLabel.appendChild(document.createTextNode("Combine top-level conditions with: "));
+        var joinSelect = document.createElement("select");
+        joinSelect.className = "blockJoinType";
+        addOption(joinSelect, "and", "ALL must be true (AND)");
+        addOption(joinSelect, "or", "ANY can be true (OR)");
+        joinLabel.appendChild(joinSelect);
+        block.appendChild(joinLabel);
+
+        var condTitle = document.createElement("div");
+        condTitle.className = "block-section-title";
+        condTitle.textContent = "Conditions (When ...)";
+        block.appendChild(condTitle);
+
+        var blockConditions = document.createElement("div");
+        blockConditions.className = "blockConditions";
+        block.appendChild(blockConditions);
+
+        var btnAddCond = document.createElement("button");
+        btnAddCond.type = "button";
+        btnAddCond.className = "btn";
+        btnAddCond.textContent = "Add Condition";
+        btnAddCond.onclick = (function (bc) {
+          return function () {
+            addConditionRowTo(bc);
+          };
+        })(blockConditions);
+        block.appendChild(btnAddCond);
+
+        var btnAddGroup = document.createElement("button");
+        btnAddGroup.type = "button";
+        btnAddGroup.className = "btn";
+        btnAddGroup.textContent = "Add Group";
+        btnAddGroup.onclick = (function (bc2) {
+          return function () {
+            addGroupRowTo(bc2);
+          };
+        })(blockConditions);
+        block.appendChild(btnAddGroup);
+      }
+
+      var actTitle = document.createElement("div");
+      actTitle.className = "block-section-title";
+      actTitle.textContent = "Actions (Then ...)";
+      block.appendChild(actTitle);
+
+      var blockActions = document.createElement("div");
+      blockActions.className = "blockActions";
+      block.appendChild(blockActions);
+
+      var btnAddAct = document.createElement("button");
+      btnAddAct.type = "button";
+      btnAddAct.className = "btn";
+      btnAddAct.textContent = "Add Action";
+      btnAddAct.onclick = (function (ba) {
+        return function () {
+          addActionRowTo(ba);
+        };
+      })(blockActions);
+      block.appendChild(btnAddAct);
+
+      container.appendChild(block);
+    }
+
+    // ==========================
+    // CONDITIONS UI
+    // ==========================
+
+    function addConditionRowTo(parentDiv) {
+      var row = document.createElement("div");
+      row.className = "condition-row";
+
+      var notLabel = document.createElement("label");
+      notLabel.className = "inline";
+      var notCheckbox = document.createElement("input");
+      notCheckbox.type = "checkbox";
+      notCheckbox.className = "condNot";
+      notLabel.appendChild(notCheckbox);
+      notLabel.appendChild(document.createTextNode("NOT"));
+      row.appendChild(notLabel);
+
+      var typeLabel = document.createElement("label");
+      typeLabel.className = "inline";
+      typeLabel.appendChild(document.createTextNode("Type: "));
+      var typeSelect = document.createElement("select");
+      typeSelect.className = "condType";
+      addOption(typeSelect, "", "-- choose --");
+      addOption(typeSelect, "anyInList", "anyInList(list)");
+      addOption(typeSelect, "noneInList", "noneInList(list)");
+      addOption(typeSelect, "countInHistory", "countInHistory(list) comparison");
+      addOption(typeSelect, "messageCountComparison", "messageCount comparison");
+      addOption(typeSelect, "personalityContains", "personality contains text");
+      addOption(typeSelect, "scenarioContains", "scenario contains text");
+      addOption(typeSelect, "messageHistoryContains", "message history contains text");
+      addOption(typeSelect, "memoryNumberComparison", "memory.number comparison");
+      addOption(typeSelect, "memoryStringContains", "memory.string contains text");
+      addOption(typeSelect, "derivedNumberComparison", "derived number comparison");
+      typeLabel.appendChild(typeSelect);
+      row.appendChild(typeLabel);
+
+      var btnRemove = document.createElement("button");
+      btnRemove.type = "button";
+      btnRemove.className = "btn inline";
+      btnRemove.appendChild(document.createTextNode("Remove"));
+      btnRemove.onclick = function () {
+        parentDiv.removeChild(row);
+        buildBlocksFromUI();
+      };
+      row.appendChild(btnRemove);
+
+      var detailsDiv = document.createElement("div");
+      detailsDiv.className = "condDetails";
+      row.appendChild(detailsDiv);
+
+      typeSelect.onchange = function () {
+        buildConditionDetails(detailsDiv, typeSelect.value);
+      };
+
+      parentDiv.appendChild(row);
+      refreshListSelectsInConditions();
+      refreshDerivedSelectsInConditions();
+    }
+
+    function addGroupRowTo(parentDiv) {
+      var group = document.createElement("div");
+      group.className = "condition-group";
+
+      var header = document.createElement("div");
+      header.className = "group-header";
+
+      var leftSpan = document.createElement("span");
+      leftSpan.textContent = "Group of conditions";
+      header.appendChild(leftSpan);
+
+      var joinLabel = document.createElement("label");
+      joinLabel.className = "inline";
+      joinLabel.appendChild(document.createTextNode("Combine with: "));
+      var joinSelect = document.createElement("select");
+      joinSelect.className = "groupJoinType";
+      addOption(joinSelect, "and", "ALL must be true (AND)");
+      addOption(joinSelect, "or", "ANY can be true (OR)");
+      joinLabel.appendChild(joinSelect);
+      header.appendChild(joinLabel);
+
+      var notLabel = document.createElement("label");
+      notLabel.className = "inline";
+      var notCheckbox = document.createElement("input");
+      notCheckbox.type = "checkbox";
+      notCheckbox.className = "groupNot";
+      notLabel.appendChild(notCheckbox);
+      notLabel.appendChild(document.createTextNode("NOT group"));
+      header.appendChild(notLabel);
+
+      var btnRemove = document.createElement("button");
+      btnRemove.type = "button";
+      btnRemove.className = "btn";
+      btnRemove.appendChild(document.createTextNode("Remove Group"));
+      btnRemove.onclick = function () {
+        parentDiv.removeChild(group);
+        buildBlocksFromUI();
+      };
+      header.appendChild(btnRemove);
+
+      group.appendChild(header);
+
+      var childrenDiv = document.createElement("div");
+      childrenDiv.className = "groupChildren";
+      group.appendChild(childrenDiv);
+
+      var btnAddCond = document.createElement("button");
+      btnAddCond.type = "button";
+      btnAddCond.className = "btn";
+      btnAddCond.textContent = "Add Condition to Group";
+      btnAddCond.onclick = (function (cd) {
+        return function () {
+          addConditionRowTo(cd);
+        };
+      })(childrenDiv);
+      group.appendChild(btnAddCond);
+
+      var btnAddSubGroup = document.createElement("button");
+      btnAddSubGroup.type = "button";
+      btnAddSubGroup.className = "btn";
+      btnAddSubGroup.textContent = "Add Subgroup";
+      btnAddSubGroup.onclick = (function (cd2) {
+        return function () {
+          addGroupRowTo(cd2);
+        };
+      })(childrenDiv);
+      group.appendChild(btnAddSubGroup);
+
+      parentDiv.appendChild(group);
+      refreshListSelectsInConditions();
+      refreshDerivedSelectsInConditions();
+    }
+
+    function buildConditionDetails(container, type) {
+      container.innerHTML = "";
+      if (!type) return;
+
+      if (type === "anyInList" || type === "noneInList") {
+        var lsLabel = document.createElement("label");
+        lsLabel.appendChild(document.createTextNode("Search from: "));
+        var lsSel = document.createElement("select");
+        lsSel.className = "condListSelect";
+        lsLabel.appendChild(lsSel);
+        container.appendChild(lsLabel);
+
+        var srcLabel = document.createElement("label");
+        srcLabel.style.marginLeft = "8px";
+        srcLabel.appendChild(document.createTextNode("Source: "));
+        var srcSel = document.createElement("select");
+        srcSel.className = "condSourceSelect";
+        addOption(srcSel, "normLastUserMsg", "Last user message (normalized)");
+        srcLabel.appendChild(srcSel);
+        container.appendChild(srcLabel);
+
+        refreshListSelectsInConditions();
+      } else if (type === "countInHistory") {
+        var lsLabel2 = document.createElement("label");
+        lsLabel2.appendChild(document.createTextNode("Search from: "));
+        var lsSel2 = document.createElement("select");
+        lsSel2.className = "condListSelect";
+        lsLabel2.appendChild(lsSel2);
+        container.appendChild(lsLabel2);
+
+        refreshListSelectsInConditions();
+
+        var windowLabel = document.createElement("label");
+        windowLabel.style.marginLeft = "8px";
+        windowLabel.appendChild(document.createTextNode("Look at last N messages: "));
+        var winInput = document.createElement("input");
+        winInput.type = "number";
+        winInput.className = "condWindowSize";
+        winInput.value = "5";
+        windowLabel.appendChild(winInput);
+        container.appendChild(windowLabel);
+
+        var opLabel = document.createElement("label");
+        opLabel.style.marginLeft = "8px";
+        opLabel.appendChild(document.createTextNode("Compare (>=, >, ==, <=, <): "));
+        var opSelect = document.createElement("select");
+        opSelect.className = "condOp";
+        addOption(opSelect, ">=", ">=");
+        addOption(opSelect, ">", ">");
+        addOption(opSelect, "==", "==");
+        addOption(opSelect, "<=", "<=");
+        addOption(opSelect, "<", "<");
+        opLabel.appendChild(opSelect);
+        container.appendChild(opLabel);
+
+        var thrLabel = document.createElement("label");
+        thrLabel.style.marginLeft = "8px";
+        thrLabel.appendChild(document.createTextNode("Threshold: "));
+        var thrInput = document.createElement("input");
+        thrInput.type = "number";
+        thrInput.className = "condThreshold";
+        thrInput.value = "1";
+        thrLabel.appendChild(thrInput);
+        container.appendChild(thrLabel);
+      } else if (type === "messageCountComparison") {
+        var opLabel2 = document.createElement("label");
+        opLabel2.appendChild(document.createTextNode("Compare messageCount with (>=, >, ==, <=, <): "));
+        var opSelect2 = document.createElement("select");
+        opSelect2.className = "condOp";
+        addOption(opSelect2, ">=", ">=");
+        addOption(opSelect2, ">", ">");
+        addOption(opSelect2, "==", "==");
+        addOption(opSelect2, "<=", "<=");
+        addOption(opSelect2, "<", "<");
+        opLabel2.appendChild(opSelect2);
+        container.appendChild(opLabel2);
+
+        var thrLabel2 = document.createElement("label");
+        thrLabel2.style.marginLeft = "8px";
+        thrLabel2.appendChild(document.createTextNode("Threshold: "));
+        var thrInput2 = document.createElement("input");
+        thrInput2.type = "number";
+        thrInput2.className = "condThreshold";
+        thrInput2.value = "1";
+        thrLabel2.appendChild(thrInput2);
+        container.appendChild(thrLabel2);
+      } else if (type === "personalityContains" || type === "scenarioContains") {
+        var txtLabel = document.createElement("label");
+        txtLabel.appendChild(document.createTextNode("Text to look for: "));
+        var txtInput = document.createElement("input");
+        txtInput.type = "text";
+        txtInput.className = "condTextContains";
+        txtInput.placeholder = "[SB_MARKER:BLUE_STATE] or blue";
+        txtLabel.appendChild(txtInput);
+        container.appendChild(txtLabel);
+
+        var ciLabel = document.createElement("label");
+        ciLabel.style.marginLeft = "8px";
+        var ciCheckbox = document.createElement("input");
+        ciCheckbox.type = "checkbox";
+        ciCheckbox.className = "condCaseInsensitive";
+        ciCheckbox.checked = true;
+        ciLabel.appendChild(ciCheckbox);
+        ciLabel.appendChild(document.createTextNode("Case-insensitive (recommended)"));
+        container.appendChild(ciLabel);
+      } else if (type === "messageHistoryContains") {
+        var txtLabel = document.createElement("label");
+        txtLabel.appendChild(document.createTextNode("Text to find: "));
+        var txtInput = document.createElement("input");
+        txtInput.type = "text";
+        txtInput.className = "condTextContains";
+        txtInput.placeholder = "e.g., ducks";
+        txtLabel.appendChild(txtInput);
+        container.appendChild(txtLabel);
+
+        var windowLabel = document.createElement("label");
+        windowLabel.style.marginLeft = "8px";
+        windowLabel.appendChild(document.createTextNode("Look at last N messages: "));
+        var winInput = document.createElement("input");
+        winInput.type = "number";
+        winInput.className = "condWindowSize";
+        winInput.value = "5";
+        windowLabel.appendChild(winInput);
+        container.appendChild(windowLabel);
+
+        var ciLabel = document.createElement("label");
+        ciLabel.style.marginLeft = "8px";
+        var ciCheckbox = document.createElement("input");
+        ciCheckbox.type = "checkbox";
+        ciCheckbox.className = "condCaseInsensitive";
+        ciCheckbox.checked = true;
+        ciLabel.appendChild(ciCheckbox);
+        ciLabel.appendChild(document.createTextNode(" Case-insensitive"));
+        container.appendChild(ciLabel);
+      } else if (type === "messageHistoryContains") {
+        var txtInputH = details.getElementsByClassName("condTextContains")[0];
+        var winInputH = details.getElementsByClassName("condWindowSize")[0];
+        var ciCheckboxH = details.getElementsByClassName("condCaseInsensitive")[0];
+        condObj.text = txtInputH ? txtInputH.value : "";
+        condObj.windowSize = winInputH ? (parseInt(winInputH.value, 10) || 5) : 5;
+        condObj.caseInsensitive = !ciCheckboxH ? true : !!ciCheckboxH.checked;
+      } else if (type === "memoryNumberComparison") {
+        var mkLabel = document.createElement("label");
+        mkLabel.appendChild(document.createTextNode("Memory key: "));
+        var mkInput = document.createElement("input");
+        mkInput.type = "text";
+        mkInput.className = "condMemKey";
+        mkInput.placeholder = "e.g. affinityScore";
+        mkLabel.appendChild(mkInput);
+        container.appendChild(mkLabel);
+
+        var opLabel3 = document.createElement("label");
+        opLabel3.style.marginLeft = "8px";
+        opLabel3.appendChild(document.createTextNode("Compare (>=, >, ==, <=, <): "));
+        var opSelect3 = document.createElement("select");
+        opSelect3.className = "condOp";
+        addOption(opSelect3, ">=", ">=");
+        addOption(opSelect3, ">", ">");
+        addOption(opSelect3, "==", "==");
+        addOption(opSelect3, "<=", "<=");
+        addOption(opSelect3, "<", "<");
+        opLabel3.appendChild(opSelect3);
+        container.appendChild(opLabel3);
+
+        var thrLabel3 = document.createElement("label");
+        thrLabel3.style.marginLeft = "8px";
+        thrLabel3.appendChild(document.createTextNode("Threshold: "));
+        var thrInput3 = document.createElement("input");
+        thrInput3.type = "number";
+        thrInput3.className = "condThreshold";
+        thrInput3.value = "0";
+        thrLabel3.appendChild(thrInput3);
+        container.appendChild(thrLabel3);
+
+        var note = document.createElement("div");
+        note.className = "small-label";
+        note.appendChild(document.createTextNode("Missing memory values are treated as 0."));
+        container.appendChild(note);
+      } else if (type === "memoryStringContains") {
+        var mkLabel2 = document.createElement("label");
+        mkLabel2.appendChild(document.createTextNode("Memory key: "));
+        var mkInput2 = document.createElement("input");
+        mkInput2.type = "text";
+        mkInput2.className = "condMemKey";
+        mkInput2.placeholder = "e.g. modeFlag";
+        mkLabel2.appendChild(mkInput2);
+        container.appendChild(mkLabel2);
+
+        var txtLabel2 = document.createElement("label");
+        txtLabel2.style.marginLeft = "8px";
+        txtLabel2.appendChild(document.createTextNode("Text to look for: "));
+        var txtInput2 = document.createElement("input");
+        txtInput2.type = "text";
+        txtInput2.className = "condTextContains";
+        txtInput2.placeholder = "e.g. BLUE_STATE";
+        txtLabel2.appendChild(txtInput2);
+        container.appendChild(txtLabel2);
+
+        var ciLabel2 = document.createElement("label");
+        ciLabel2.style.marginLeft = "8px";
+        var ciCheckbox2 = document.createElement("input");
+        ciCheckbox2.type = "checkbox";
+        ciCheckbox2.className = "condCaseInsensitive";
+        ciCheckbox2.checked = true;
+        ciLabel2.appendChild(ciCheckbox2);
+        ciLabel2.appendChild(document.createTextNode("Case-insensitive (recommended)"));
+        container.appendChild(ciLabel2);
+
+        var note2 = document.createElement("div");
+        note2.className = "small-label";
+        note2.appendChild(document.createTextNode("Missing memory values are treated as empty string."));
+        container.appendChild(note2);
+      } else if (type === "derivedNumberComparison") {
+        var dkLabel = document.createElement("label");
+        dkLabel.appendChild(document.createTextNode("Derived key: "));
+        var dkSelect = document.createElement("select");
+        dkSelect.className = "condDerivedKeySelect";
+        dkLabel.appendChild(dkSelect);
+        container.appendChild(dkLabel);
+
+        var opLabel4 = document.createElement("label");
+        opLabel4.style.marginLeft = "8px";
+        opLabel4.appendChild(document.createTextNode("Compare (>=, >, ==, <=, <): "));
+        var opSelect4 = document.createElement("select");
+        opSelect4.className = "condOp";
+        addOption(opSelect4, ">=", ">=");
+        addOption(opSelect4, ">", ">");
+        addOption(opSelect4, "==", "==");
+        addOption(opSelect4, "<=", "<=");
+        addOption(opSelect4, "<", "<");
+        opLabel4.appendChild(opSelect4);
+        container.appendChild(opLabel4);
+
+        var thrLabel4 = document.createElement("label");
+        thrLabel4.style.marginLeft = "8px";
+        thrLabel4.appendChild(document.createTextNode("Threshold: "));
+        var thrInput4 = document.createElement("input");
+        thrInput4.type = "number";
+        thrInput4.className = "condThreshold";
+        thrInput4.value = "0";
+        thrLabel4.appendChild(thrInput4);
+        container.appendChild(thrLabel4);
+
+        var note3 = document.createElement("div");
+        note3.className = "small-label";
+        note3.appendChild(document.createTextNode("Missing derived values are treated as 0."));
+        container.appendChild(note3);
+
+        refreshDerivedSelectsInConditions();
+      }
+    }
+
+    function refreshDerivedSelectsInConditions() {
+      var container = document.getElementById("triggerBlocksContainer");
+      var selects = container.getElementsByClassName("condDerivedKeySelect");
+      var i;
+      for (i = 0; i < selects.length; i++) {
+        var sel = selects[i];
+        var current = sel.value;
+        sel.innerHTML = "";
+        var opt = document.createElement("option");
+        opt.value = "";
+        opt.text = "-- choose derived --";
+        sel.appendChild(opt);
+
+        var j;
+        for (j = 0; j < appState.derived.length; j++) {
+          var d = appState.derived[j];
+          var label = d.key;
+          if (d.description) {
+            label += " (" + d.description + ")";
+          }
+          var o = document.createElement("option");
+          o.value = d.key;
+          o.text = label;
+          sel.appendChild(o);
+        }
+
+        if (current) {
+          sel.value = current;
+        } else {
+          sel.value = "";
+        }
+      }
+    }
+
+    // ==========================
+    // ACTIONS UI (incl. memory)
+    // ==========================
+
+    function updateActionRowMemoryUI(row) {
+      var targetSel = row.getElementsByClassName("actionTarget")[0];
+      var memLabel = row.getElementsByClassName("memoryKeyLabel")[0];
+      var textArea = row.getElementsByClassName("actionText")[0];
+      if (!targetSel || !memLabel) return;
+      var t = targetSel.value;
+      var isMem = (t === "memoryNumeric" || t === "memoryString");
+      memLabel.style.display = isMem ? "inline-block" : "none";
+
+      if (textArea) {
+        if (t === "memoryNumeric") {
+          textArea.placeholder = "Numeric value (e.g. 1, 0.5, -2)";
+        } else if (t === "memoryString") {
+          textArea.placeholder = "String value to store/append in memory";
+        } else {
+          textArea.placeholder = "\\nThey are secretly in love with the user.";
+        }
+      }
+    }
+
+    function addActionRowTo(blockActionsDiv) {
+      var row = document.createElement("div");
+      row.className = "action-row";
+
+      var targetLabel = document.createElement("label");
+      targetLabel.className = "inline";
+      targetLabel.appendChild(document.createTextNode("Target: "));
+      var targetSelect = document.createElement("select");
+      targetSelect.className = "actionTarget";
+      addOption(targetSelect, "context.character.personality", "context.character.personality");
+      addOption(targetSelect, "context.character.scenario", "context.character.scenario");
+      addOption(targetSelect, "memoryNumeric", "memory numeric (context.character.memory[KEY])");
+      addOption(targetSelect, "memoryString", "memory string (context.character.memory[KEY])");
+      targetLabel.appendChild(targetSelect);
+      row.appendChild(targetLabel);
+
+      var modeLabel = document.createElement("label");
+      modeLabel.className = "inline";
+      modeLabel.appendChild(document.createTextNode("Mode: "));
+      var modeSelect = document.createElement("select");
+      modeSelect.className = "actionMode";
+      addOption(modeSelect, "append", "append / increment");
+      addOption(modeSelect, "set", "set");
+      modeLabel.appendChild(modeSelect);
+      row.appendChild(modeLabel);
+
+      // Memory key (only used when target is memory*)
+      var memKeyLabel = document.createElement("label");
+      memKeyLabel.className = "inline memoryKeyLabel";
+      memKeyLabel.style.display = "none";
+      memKeyLabel.appendChild(document.createTextNode("Memory key: "));
+      var memKeyInput = document.createElement("input");
+      memKeyInput.type = "text";
+      memKeyInput.className = "memoryKeyInput";
+      memKeyInput.placeholder = "e.g. affinityScore";
+      memKeyLabel.appendChild(memKeyInput);
+      row.appendChild(memKeyLabel);
+
+      var labelInput = document.createElement("input");
+      labelInput.type = "text";
+      labelInput.className = "actionLabel";
+      labelInput.placeholder = "Action label (optional)";
+      labelInput.style.marginLeft = "8px";
+      labelInput.style.minWidth = "120px";
+      row.appendChild(labelInput);
+
+      var btnRemove = document.createElement("button");
+      btnRemove.type = "button";
+      btnRemove.className = "btn inline";
+      btnRemove.appendChild(document.createTextNode("Remove"));
+      btnRemove.onclick = function () {
+        blockActionsDiv.removeChild(row);
+        buildBlocksFromUI();
+      };
+      row.appendChild(btnRemove);
+
+      var textLabel = document.createElement("div");
+      textLabel.appendChild(document.createTextNode("Text / value (string or number depending on target):"));
+      row.appendChild(textLabel);
+
+      var textArea = document.createElement("textarea");
+      textArea.className = "actionText grow-textarea";
+      textArea.placeholder = "\\nThey are secretly in love with the user.";
+      row.appendChild(textArea);
+
+      // Wire target change -> update memory UI
+      targetSelect.onchange = function () {
+        updateActionRowMemoryUI(row);
+      };
+      updateActionRowMemoryUI(row);
+
+      blockActionsDiv.appendChild(row);
+    }
+
+    // ==========================
+    // READ CONDITIONS / BLOCKS
+    // ==========================
+
+    function readConditionsFromContainer(container) {
+      var result = [];
+      var children = container.children;
+      var i;
+      for (i = 0; i < children.length; i++) {
+        var node = children[i];
+        if (node.className.indexOf("condition-row") !== -1) {
+          var cond = readConditionLeaf(node);
+          if (cond) result.push(cond);
+        } else if (node.className.indexOf("condition-group") !== -1) {
+          var group = readConditionGroup(node);
+          if (group) result.push(group);
+        }
+      }
+      return result;
+    }
+
+    function readConditionLeaf(row) {
+      var typeSel = row.getElementsByClassName("condType")[0];
+      if (!typeSel) return null;
+      var type = typeSel.value;
+      if (!type) return null;
+
+      var notCheckbox = row.getElementsByClassName("condNot")[0];
+      var notFlag = !!(notCheckbox && notCheckbox.checked);
+
+      var details = row.getElementsByClassName("condDetails")[0];
+      var condObj = { nodeType: "cond", not: notFlag, type: type };
+
+      if (type === "anyInList" || type === "noneInList") {
+        var lsSel = details.getElementsByClassName("condListSelect")[0];
+        var srcSel = details.getElementsByClassName("condSourceSelect")[0];
+        if (!lsSel || !lsSel.value) return null;
+        condObj.listId = lsSel.value;
+        condObj.source = srcSel ? srcSel.value : "normLastUserMsg";
+      } else if (type === "countInHistory") {
+        var lsSel2 = details.getElementsByClassName("condListSelect")[0];
+        var winInput = details.getElementsByClassName("condWindowSize")[0];
+        var opSel = details.getElementsByClassName("condOp")[0];
+        var thrInput = details.getElementsByClassName("condThreshold")[0];
+        if (!lsSel2 || !lsSel2.value) return null;
+        condObj.listId = lsSel2.value;
+        condObj.windowSize = parseInt(winInput.value, 10) || 5;
+        condObj.op = opSel.value || ">=";
+        condObj.threshold = parseInt(thrInput.value, 10) || 1;
+      } else if (type === "messageCountComparison") {
+        var opSel2 = details.getElementsByClassName("condOp")[0];
+        var thrInput2 = details.getElementsByClassName("condThreshold")[0];
+        condObj.op = opSel2.value || ">=";
+        condObj.threshold = parseInt(thrInput2.value, 10) || 1;
+      } else if (type === "personalityContains" || type === "scenarioContains") {
+        var txtInput = details.getElementsByClassName("condTextContains")[0];
+        var ciCheckbox = details.getElementsByClassName("condCaseInsensitive")[0];
+        condObj.text = txtInput ? txtInput.value : "";
+        condObj.caseInsensitive = !ciCheckbox ? true : !!ciCheckbox.checked;
+      } else if (type === "messageHistoryContains") {
+        var txtInputH = details.getElementsByClassName("condTextContains")[0];
+        var winInputH = details.getElementsByClassName("condWindowSize")[0];
+        var ciCheckboxH = details.getElementsByClassName("condCaseInsensitive")[0];
+        condObj.text = txtInputH ? txtInputH.value : "";
+        condObj.windowSize = winInputH ? (parseInt(winInputH.value, 10) || 5) : 5;
+        condObj.caseInsensitive = !ciCheckboxH ? true : !!ciCheckboxH.checked;
+      } else if (type === "memoryNumberComparison") {
+        var mkInput = details.getElementsByClassName("condMemKey")[0];
+        var opSel3 = details.getElementsByClassName("condOp")[0];
+        var thrInput3 = details.getElementsByClassName("condThreshold")[0];
+        condObj.memKey = mkInput ? mkInput.value : "";
+        condObj.op = opSel3 ? opSel3.value || ">=" : ">=";
+        condObj.threshold = thrInput3 ? (parseInt(thrInput3.value, 10) || 0) : 0;
+      } else if (type === "memoryStringContains") {
+        var mkInput2 = details.getElementsByClassName("condMemKey")[0];
+        var txtInput2 = details.getElementsByClassName("condTextContains")[0];
+        var ciCheckbox2 = details.getElementsByClassName("condCaseInsensitive")[0];
+        condObj.memKey = mkInput2 ? mkInput2.value : "";
+        condObj.text = txtInput2 ? txtInput2.value : "";
+        condObj.caseInsensitive = !ciCheckbox2 ? true : !!ciCheckbox2.checked;
+      } else if (type === "derivedNumberComparison") {
+        var dkSelect = details.getElementsByClassName("condDerivedKeySelect")[0];
+        var opSel4 = details.getElementsByClassName("condOp")[0];
+        var thrInput4 = details.getElementsByClassName("condThreshold")[0];
+        condObj.derivedKey = dkSelect ? dkSelect.value : "";
+        condObj.op = opSel4 ? opSel4.value || ">=" : ">=";
+        condObj.threshold = thrInput4 ? (parseInt(thrInput4.value, 10) || 0) : 0;
+      }
+
+      return condObj;
+    }
+
+    function readConditionGroup(groupNode) {
+      var joinSelect = groupNode.getElementsByClassName("groupJoinType")[0];
+      var join = joinSelect ? joinSelect.value || "and" : "and";
+
+      var notCheckbox = groupNode.getElementsByClassName("groupNot")[0];
+      var notFlag = !!(notCheckbox && notCheckbox.checked);
+
+      var childrenDiv = groupNode.getElementsByClassName("groupChildren")[0];
+      var children = readConditionsFromContainer(childrenDiv);
+
+      return {
+        nodeType: "group",
+        join: join,
+        not: notFlag,
+        children: children
+      };
+    }
+
+    function buildBlocksFromUI() {
+      var container = document.getElementById("triggerBlocksContainer");
+      var blocksNodes = container.getElementsByClassName("trigger-block");
+      var blocks = [];
+      var i;
+
+      for (i = 0; i < blocksNodes.length; i++) {
+        var blockNode = blocksNodes[i];
+        var type = blockNode.getAttribute("data-block-type") || "if";
+
+        var join = "and";
+        if (type !== "else") {
+          var joinSelect = blockNode.getElementsByClassName("blockJoinType")[0];
+          if (joinSelect) join = joinSelect.value || "and";
+        }
+
+        var blockLabelInput = blockNode.getElementsByClassName("blockLabelInput")[0];
+        var blockDescInput = blockNode.getElementsByClassName("blockDescInput")[0];
+        var blockLabel = blockLabelInput ? blockLabelInput.value : "";
+        var blockDesc = blockDescInput ? blockDescInput.value : "";
+
+        var conditions = [];
+        if (type !== "else") {
+          var condContainer = blockNode.getElementsByClassName("blockConditions")[0];
+          if (condContainer) {
+            conditions = readConditionsFromContainer(condContainer);
+          }
+        }
+
+        var actions = [];
+        var actContainer = blockNode.getElementsByClassName("blockActions")[0];
+        if (actContainer) {
+          var actRows = actContainer.getElementsByClassName("action-row");
+          var j;
+          for (j = 0; j < actRows.length; j++) {
+            var arow = actRows[j];
+            var targetSel = arow.getElementsByClassName("actionTarget")[0];
+            var modeSel = arow.getElementsByClassName("actionMode")[0];
+            var textArea = arow.getElementsByClassName("actionText")[0];
+            var labelInput = arow.getElementsByClassName("actionLabel")[0];
+            var memKeyInput = arow.getElementsByClassName("memoryKeyInput")[0];
+
+            if (!targetSel || !textArea) continue;
+
+            var txt = textArea.value;
+            if (!txt && (targetSel.value !== "memoryNumeric")) {
+              // For memoryNumeric, allow blank (will become 0)
+              continue;
+            }
+
+            var actionLabel = labelInput ? labelInput.value : "";
+            var memKey = memKeyInput ? memKeyInput.value : "";
+
+            actions.push({
+              target: targetSel.value || "context.character.personality",
+              mode: modeSel.value || "append",
+              text: txt,
+              label: actionLabel,
+              memKey: memKey
+            });
+          }
+        }
+
+        blocks.push({
+          type: type,
+          label: blockLabel,
+          description: blockDesc,
+          join: join,
+          conditions: conditions,
+          actions: actions
+        });
+      }
+
+      appState.blocks = blocks;
+      refreshDebug();
+    }
+
+    // ==========================
+    // VALIDATION
+    // ==========================
+
+    function validateConfig() {
+      var messages = [];
+
+      var knownListIds = {};
+      var i;
+      for (i = 0; i < appState.lists.length; i++) {
+        knownListIds[appState.lists[i].id] = true;
+      }
+
+      var knownDerivedKeys = {};
+      for (i = 0; i < appState.derived.length; i++) {
+        var dv = appState.derived[i];
+        if (!dv.key) {
+          messages.push("Derived value #" + (i + 1) + " is missing a key.");
+        } else {
+          knownDerivedKeys[dv.key] = true;
+        }
+        if (!dv.listId) {
+          messages.push("Derived value '" + (dv.key || ("#" + (i + 1))) + "' is missing a list.");
+        } else if (!knownListIds[dv.listId]) {
+          messages.push("Derived value '" + dv.key + "' uses undefined list id '" + dv.listId + "'.");
+        }
+        if (!dv.windowSize || dv.windowSize <= 0) {
+          messages.push("Derived value '" + dv.key + "' has non-positive window size; it will default to 10.");
+        }
+      }
+
+      function checkConditionNode(node, path) {
+        if (!node) return;
+        if (node.nodeType === "group") {
+          var children = node.children || [];
+          var j;
+          for (j = 0; j < children.length; j++) {
+            checkConditionNode(children[j], path);
+          }
+        } else {
+          if (node.type === "anyInList" || node.type === "noneInList" || node.type === "countInHistory") {
+            if (node.listId && !knownListIds[node.listId]) {
+              messages.push("Condition uses undefined list id '" + node.listId + "' in " + path + ".");
+            }
+          }
+          if (node.type === "messageHistoryContains") {
+            if (!node.text || !String(node.text).length) {
+              messages.push("History-contains condition in " + path + " is missing search text.");
+            }
+            if (!(typeof node.windowSize === "number") || node.windowSize <= 0) {
+              messages.push("History-contains condition in " + path + " has invalid window size.");
+            }
+          }
+          if ((node.type === "memoryNumberComparison" || node.type === "memoryStringContains") &&
+              (!node.memKey || !node.memKey.length)) {
+            messages.push("Memory condition in " + path + " is missing a memory key.");
+          }
+          if (node.type === "derivedNumberComparison") {
+            if (!node.derivedKey || !node.derivedKey.length) {
+              messages.push("Derived condition in " + path + " is missing a derived key.");
+            } else if (!knownDerivedKeys[node.derivedKey]) {
+              messages.push("Derived condition in " + path + " uses undefined derived key '" + node.derivedKey + "'.");
+            }
+          }
+        }
+      }
+
+      var hasIfInChain = false;
+      var hasElseInChain = false;
+
+      for (i = 0; i < appState.blocks.length; i++) {
+        var block = appState.blocks[i];
+        var label = block.label || ("block #" + (i + 1));
+
+        if (block.type === "if") {
+          hasIfInChain = true;
+          hasElseInChain = false;
+        } else if (block.type === "elseif") {
+          if (!hasIfInChain) {
+            messages.push("ELSE IF without a preceding IF near " + label + ".");
+          }
+        } else if (block.type === "else") {
+          if (!hasIfInChain) {
+            messages.push("ELSE without a preceding IF near " + label + ".");
+          } else if (hasElseInChain) {
+            messages.push("Multiple ELSE blocks in the same IF/ELSE chain near " + label + ".");
+          }
+          hasElseInChain = true;
+        }
+
+        if ((block.type === "if" || block.type === "elseif")) {
+          if (!block.conditions || !block.conditions.length) {
+            messages.push("IF/ELSE IF block '" + label + "' has no conditions; it will always be true.");
+          }
+        }
+
+        if (!block.actions || !block.actions.length) {
+          messages.push("Block '" + label + "' has no actions and does nothing.");
+        } else {
+          var a;
+          for (a = 0; a < block.actions.length; a++) {
+            var act = block.actions[a];
+            if ((act.target === "memoryNumeric" || act.target === "memoryString") &&
+                (!act.memKey || !act.memKey.length)) {
+              messages.push("Memory action in block '" + label + "' is missing a memory key.");
+            }
+          }
+        }
+
+        var nodes = block.conditions || [];
+        var j;
+        for (j = 0; j < nodes.length; j++) {
+          checkConditionNode(nodes[j], label);
+        }
+      }
+
+      return messages;
+    }
+
+    // ==========================
+    // CODE GENERATION
+    // ==========================
+
+    function generateCode() {
+      var lines = [];
+
+      lines.push("// Generated by JanitorAI Trigger Builder (ScriptBuilder_V5)");
+      lines.push("// Paste this into an advanced script. Adjust as needed.");
+      lines.push("");
+
+      // List declarations
+      if (appState.lists.length) {
+        var i, list;
+        for (i = 0; i < appState.lists.length; i++) {
+          list = appState.lists[i];
+          if (list.label || list.description) {
+            var comment = "// List: " + (list.label || list.id);
+            if (list.description) comment += " - " + list.description;
+            lines.push(comment);
+          }
+          lines.push("var " + list.id + " = " + JSON.stringify(list.items) + ";");
+        }
+        lines.push("");
+      } else {
+        lines.push("// No lists defined yet (you can add some, or remove these lines).");
+        lines.push("");
+      }
+
+      // Context extraction
+      lines.push("// Extract recent chat info from context");
+      lines.push("var lastMessages = (context.chat && context.chat.last_messages) ? context.chat.last_messages : [];");
+      lines.push("var messageCount = lastMessages.length;");
+      lines.push("var rawLastUserMsg = \"\";");
+      lines.push("if (messageCount > 0) {");
+      lines.push("  rawLastUserMsg = String(lastMessages[messageCount - 1].message || \"\");");
+      lines.push("}");
+      lines.push("var normLastUserMsg = normalize(rawLastUserMsg);");
+      lines.push("");
+      lines.push("// Build normalized history (messages only)");
+      lines.push("var normHistory = [];");
+      lines.push("for (var i = 0; i < lastMessages.length; i++) {");
+      lines.push("  normHistory.push(normalize(String(lastMessages[i].message || \"\")));");
+      lines.push("}");
+      lines.push("");
+
+      // Memory object
+      lines.push("// Ensure memory object exists for this turn");
+      lines.push("context.character = context.character || {};");
+      lines.push("context.character.memory = context.character.memory || {};");
+      lines.push("");
+
+      // Helpers
+      lines.push("// Helper functions (text normalization & matching)");
+      lines.push("function normalize(str) {");
+      lines.push("  str = (str || \"\");");
+      lines.push("  str = str.toLowerCase();");
+      lines.push("  str = str.replace(/[^a-z0-9_\\s-]/g, \" \");");
+      lines.push("  str = str.replace(/[-_]+/g, \" \");");
+      lines.push("  str = str.replace(/\\s+/g, \" \");");
+      lines.push("  return str.trim();");
+      lines.push("}");
+      lines.push("");
+      lines.push("function anyInList(text, list) {");
+      lines.push("  text = String(text || \"\").toLowerCase();");
+      lines.push("  for (var i = 0; i < list.length; i++) {");
+      lines.push("    var needle = String(list[i] || \"\").toLowerCase();");
+      lines.push("    if (!needle) continue;");
+      lines.push("    if (text.indexOf(needle) !== -1) return true;");
+      lines.push("  }");
+      lines.push("  return false;");
+      lines.push("}");
+      lines.push("");
+      lines.push("function noneInList(text, list) {");
+      lines.push("  return !anyInList(text, list);");
+      lines.push("}");
+      lines.push("");
+      lines.push("function countMatchesInHistory(history, list, windowSize) {");
+      lines.push("  var count = 0;");
+      lines.push("  var len = history.length;");
+      lines.push("  var start = 0;");
+      lines.push("  if (windowSize && windowSize > 0 && windowSize < len) {");
+      lines.push("    start = len - windowSize;");
+      lines.push("  }");
+      lines.push("  for (var i = start; i < len; i++) {");
+      lines.push("    if (anyInList(history[i], list)) count++;");
+      lines.push("  }");
+      lines.push("  return count;");
+      lines.push("}");
+      lines.push("");
+
+      // Derived values
+      lines.push("// Derived values from history (recomputed each call)");
+      lines.push("var derived = {};");
+      if (appState.derived && appState.derived.length) {
+        var d;
+        for (d = 0; d < appState.derived.length; d++) {
+          var dv = appState.derived[d];
+          var key = dv.key || "";
+          var keyJSON = JSON.stringify(key);
+          var listId = dv.listId;
+          var windowSize = (typeof dv.windowSize === "number" && dv.windowSize > 0) ? dv.windowSize : 10;
+          var comment2 = "// derived[" + key + "] = countMatchesInHistory(normHistory, " +
+            listId + ", " + windowSize + ");";
+          if (dv.description) {
+            comment2 += " // " + dv.description;
+          }
+          lines.push(comment2);
+          lines.push("derived[" + keyJSON + "] = countMatchesInHistory(normHistory, " +
+            listId + ", " + windowSize + ");");
+        }
+        lines.push("");
+      } else {
+        lines.push("// (No derived values configured.)");
+        lines.push("");
+      }
+
+      // Blocks
+      if (!appState.blocks.length) {
+        lines.push("// NOTE: No trigger blocks defined; nothing will happen.");
+      } else {
+        var hasIfInChain = false;
+        var hasElseInChain = false;
+        var b, block, condExpr, idx;
+
+        for (b = 0; b < appState.blocks.length; b++) {
+          block = appState.blocks[b];
+
+          condExpr = "";
+          if (block.type === "if" || block.type === "elseif") {
+            condExpr = buildConditionExpression(block);
+            if (!condExpr) condExpr = "true";
+          }
+
+          if (block.type === "if") {
+            hasIfInChain = true;
+            hasElseInChain = false;
+            var blockLabel = block.label || "";
+            var blockDesc = block.description || "";
+            var blockComment = "// IF block " + (b + 1);
+            if (blockLabel) blockComment += " [" + blockLabel + "]";
+            if (blockDesc) blockComment += " - " + blockDesc;
+            lines.push(blockComment);
+            lines.push("if (" + condExpr + ") {");
+          } else if (block.type === "elseif") {
+            if (hasIfInChain && !hasElseInChain) {
+              lines.push("else if (" + condExpr + ") {");
+            } else {
+              hasIfInChain = true;
+              hasElseInChain = false;
+              lines.push("// ELSE IF without active IF; using standalone IF");
+              lines.push("if (" + condExpr + ") {");
+            }
+          } else if (block.type === "else") {
+            if (hasIfInChain && !hasElseInChain) {
+              lines.push("else {");
+              hasElseInChain = true;
+            } else {
+              hasIfInChain = true;
+              hasElseInChain = false;
+              lines.push("// ELSE without active IF; using standalone IF(true)");
+              lines.push("if (true) {");
+            }
+          }
+
+          if (block.actions && block.actions.length) {
+            for (idx = 0; idx < block.actions.length; idx++) {
+              var action = block.actions[idx];
+              if (action.label) {
+                lines.push("  // Action: " + action.label);
+              }
+
+              if (action.target === "memoryNumeric") {
+                var keyNum = action.memKey || "";
+                var keyNumJSON = JSON.stringify(keyNum);
+                var numVal = parseFloat(action.text);
+                if (!isFinite(numVal)) numVal = 0;
+                if (action.mode === "set") {
+                  lines.push("  context.character.memory[" + keyNumJSON + "] = " + numVal + ";");
+                } else {
+                  lines.push("  context.character.memory[" + keyNumJSON + "] = (Number(context.character.memory[" +
+                    keyNumJSON + "] || 0) + " + numVal + ");");
+                }
+              } else if (action.target === "memoryString") {
+                var keyStr = action.memKey || "";
+                var keyStrJSON = JSON.stringify(keyStr);
+                var textJSONMem = JSON.stringify(action.text);
+                if (action.mode === "set") {
+                  lines.push("  context.character.memory[" + keyStrJSON + "] = " + textJSONMem + ";");
+                } else {
+                  lines.push("  context.character.memory[" + keyStrJSON + "] = String(context.character.memory[" +
+                    keyStrJSON + "] || \"\") + " + textJSONMem + ";");
+                }
+              } else {
+                var textJSON = JSON.stringify(action.text);
+                if (action.mode === "set") {
+                  lines.push("  " + action.target + " = " + textJSON + ";");
+                } else {
+                                    if (action.target === "context.character.personality") {
+                    lines.push("  var __curPer = String(context.character.personality || \"\" );");
+                    lines.push("  context.character.personality = __curPer ? (__curPer + \"\\n\" + " + textJSON + ") : " + textJSON + ";");
+                  } else if (action.target === "context.character.scenario") {
+                    lines.push("  var __curScn = String(context.character.scenario || \"\" );");
+                    lines.push("  context.character.scenario = __curScn ? (__curScn + \"\\n\" + " + textJSON + ") : " + textJSON + ";");
+                  } else {
+                    lines.push("  " + action.target + " += " + textJSON + ";");
+                  }
+                }
+              }
+            }
+          } else {
+            lines.push("  // (No actions defined for this block)");
+          }
+
+          lines.push("}");
+          lines.push("");
+        }
+      }
+
+      document.getElementById("generatedCode").textContent = lines.join("\n");
+    }
+
+    function buildConditionExpression(block) {
+      var nodes = block.conditions || [];
+      if (!nodes.length) return "";
+      var joinType = block.join || "and";
+      return renderNodeList(nodes, joinType);
+    }
+
+    function renderNodeList(nodes, joinType) {
+      if (!nodes || !nodes.length) return "";
+      var joinOp = (joinType === "or") ? " || " : " && ";
+      var parts = [];
+      var i;
+      for (i = 0; i < nodes.length; i++) {
+        var expr = renderSingleNode(nodes[i]);
+        if (!expr) expr = "true";
+        parts.push("(" + expr + ")");
+      }
+      return parts.join(joinOp);
+    }
+
+    function renderSingleNode(node) {
+      if (!node) return "true";
+
+      if (node.nodeType === "group") {
+        var inner = renderNodeList(node.children || [], node.join || "and");
+        if (!inner) inner = "true";
+        if (node.not) {
+          return "!(" + inner + ")";
+        }
+        return "(" + inner + ")";
+      }
+
+      var expr = "true";
+      if (node.type === "anyInList") {
+        var src = node.source || "normLastUserMsg";
+        expr = "anyInList(" + src + ", " + node.listId + ")";
+      } else if (node.type === "noneInList") {
+        var src2 = node.source || "normLastUserMsg";
+        expr = "noneInList(" + src2 + ", " + node.listId + ")";
+      } else if (node.type === "countInHistory") {
+        var win = (typeof node.windowSize === "number") ? node.windowSize : 5;
+        var op = node.op || ">=";
+        var thr = (typeof node.threshold === "number") ? node.threshold : 1;
+        expr = "countMatchesInHistory(normHistory, " + node.listId + ", " + win + ") " + op + " " + thr;
+      } else if (node.type === "messageCountComparison") {
+        var op2 = node.op || ">=";
+        var thr2 = (typeof node.threshold === "number") ? node.threshold : 1;
+        expr = "messageCount " + op2 + " " + thr2;
+      } else if (node.type === "personalityContains" || node.type === "scenarioContains") {
+        var field = (node.type === "personalityContains")
+          ? "context.character.personality"
+          : "context.character.scenario";
+        var txt = (typeof node.text === "string") ? node.text : "";
+        var ci = (node.caseInsensitive !== false);
+        var needle = ci ? txt.toLowerCase() : txt;
+        var needleJSON = JSON.stringify(needle);
+        if (ci) {
+          expr = "String(" + field + " || \"\").toLowerCase().indexOf(" + needleJSON + ") !== -1";
+        } else {
+          expr = "String(" + field + " || \"\").indexOf(" + needleJSON + ") !== -1";
+        }
+      } else if (node.type === "memoryNumberComparison") {
+        var key = (typeof node.memKey === "string") ? node.memKey : "";
+        var keyJSON = JSON.stringify(key);
+        var op3 = node.op || ">=";
+        var thr3 = (typeof node.threshold === "number") ? node.threshold : 0;
+        expr = "Number(context.character.memory[" + keyJSON + "] || 0) " + op3 + " " + thr3;
+      } else if (node.type === "memoryStringContains") {
+        var key2 = (typeof node.memKey === "string") ? node.memKey : "";
+        var keyJSON2 = JSON.stringify(key2);
+        var txt2 = (typeof node.text === "string") ? node.text : "";
+        var ci2 = (node.caseInsensitive !== false);
+        var fieldExpr = "String(context.character.memory[" + keyJSON2 + "] || \"\")";
+        var needle2 = ci2 ? txt2.toLowerCase() : txt2;
+        var needleJSON2 = JSON.stringify(needle2);
+        if (ci2) {
+          expr = fieldExpr + ".toLowerCase().indexOf(" + needleJSON2 + ") !== -1";
+        } else {
+          expr = fieldExpr + ".indexOf(" + needleJSON2 + ") !== -1";
+        }
+      } else if (node.type === "derivedNumberComparison") {
+        var dkey = (typeof node.derivedKey === "string") ? node.derivedKey : "";
+        var dkeyJSON = JSON.stringify(dkey);
+        var op4 = node.op || ">=";
+        var thr4 = (typeof node.threshold === "number") ? node.threshold : 0;
+        expr = "Number(derived[" + dkeyJSON + "] || 0) " + op4 + " " + thr4;
+      }
+
+      if (node.not) {
+        return "!(" + expr + ")";
+      }
+      return expr;
+    }
+
+    // ==========================
+    // INIT
+    // ==========================
+
+    
+    // ==========================
+    // TEST HARNESS (Standalone Evaluator)
+    // ==========================
+
+    var thState = { messages: [] };
+
+    function thEl(id){ return document.getElementById(id); }
+
+    function thNormalize(str){
+      str = (str || "");
+      str = String(str).toLowerCase();
+      str = str.replace(/[^a-z0-9_\s-]/g, " ");
+      str = str.replace(/[-_]+/g, " ");
+      str = str.replace(/\s+/g, " ");
+      return str.trim();
+    }
+
+    function thGetListItems(listId){
+      var i;
+      for (i = 0; i < appState.lists.length; i++){
+        if (appState.lists[i].id === listId) return (appState.lists[i].items || []);
+      }
+      return [];
+    }
+
+    function thAnyInList(text, list){
+      text = String(text || "").toLowerCase();
+      var i;
+      for (i = 0; i < list.length; i++){
+        var needle = String(list[i] || "").toLowerCase();
+        if (!needle) continue;
+        if (text.indexOf(needle) !== -1) return true;
+      }
+      return false;
+    }
+    function thNoneInList(text, list){ return !thAnyInList(text, list); }
+
+    function thCountMatchesInHistory(normHistory, list, windowSize){
+      var count = 0;
+      var len = normHistory.length;
+      var start = 0;
+      if (windowSize && windowSize > 0 && windowSize < len) start = len - windowSize;
+      var i;
+      for (i = start; i < len; i++){
+        if (thAnyInList(normHistory[i], list)) count++;
+      }
+      return count;
+    }
+
+    function thCompare(op, left, right){
+      if (op === ">=") return left >= right;
+      if (op === ">")  return left > right;
+      if (op === "==") return left == right; // intentional loose compare
+      if (op === "<=") return left <= right;
+      if (op === "<")  return left < right;
+      return false;
+    }
+
+    function thEvalNode(node, env){
+      if (!node) return true;
+
+      if (node.nodeType === "group"){
+        var join = (node.join === "or") ? "or" : "and";
+        var kids = node.children || [];
+        var i, out;
+
+        if (join === "or"){
+          out = false;
+          for (i = 0; i < kids.length; i++){
+            if (thEvalNode(kids[i], env)) { out = true; break; }
+          }
+        } else {
+          out = true;
+          for (i = 0; i < kids.length; i++){
+            if (!thEvalNode(kids[i], env)) { out = false; break; }
+          }
+        }
+
+        if (node.not) out = !out;
+        return out;
+      }
+
+      // leaf condition
+      var t = node.type || "";
+      var out2 = true;
+
+      if (t === "anyInList" || t === "noneInList"){
+        var items = thGetListItems(node.listId);
+        var txt = env.normLastUserMsg;
+        out2 = (t === "anyInList") ? thAnyInList(txt, items) : thNoneInList(txt, items);
+
+      } else if (t === "countInHistory"){
+        var items2 = thGetListItems(node.listId);
+        var win = (typeof node.windowSize === "number") ? node.windowSize : 10;
+        var op = node.op || ">=";
+        var thr = (typeof node.threshold === "number") ? node.threshold : 1;
+        var cnt = thCountMatchesInHistory(env.normHistory, items2, win);
+        out2 = thCompare(op, cnt, thr);
+
+      } else if (t === "messageCountComparison"){
+        var op2 = node.op || ">=";
+        var thr2 = (typeof node.threshold === "number") ? node.threshold : 1;
+        out2 = thCompare(op2, env.messageCount, thr2);
+
+      } else if (t === "messageHistoryContains"){
+        var needleH = thNormalize(String(node.text || ""));
+        var winH = (typeof node.windowSize === "number") ? node.windowSize : 5;
+        var lenH = env.normHistory.length;
+        var startH = 0;
+        if (winH && winH > 0 && winH < lenH) startH = lenH - winH;
+        var idxFound = -1;
+        var ii;
+        for (ii = startH; ii < lenH; ii++){
+          if (env.normHistory[ii].indexOf(needleH) !== -1){ idxFound = ii; break; }
+        }
+        var okH = (idxFound !== -1);
+        if (okH) push('Last ' + winH + ' messages included "' + String(node.text || "") + '" (found in Message ' + (idxFound + 1) + ').');
+        else push('Last ' + winH + ' messages did not include "' + String(node.text || "") + '".');
+        out.ok = okH;
+      } else if (t === "personalityContains" || t === "scenarioContains"){
+        var hay = (t === "personalityContains")
+          ? String(env.context.character.personality || "")
+          : String(env.context.character.scenario || "");
+        var needle = String(node.text || "");
+        var ci = (node.caseInsensitive !== false);
+        out2 = ci ? (hay.toLowerCase().indexOf(needle.toLowerCase()) !== -1) : (hay.indexOf(needle) !== -1);
+
+      } else if (t === "memoryNumberComparison"){
+        var k = String(node.memKey || "");
+        var op3 = node.op || ">=";
+        var thr3 = (typeof node.threshold === "number") ? node.threshold : 0;
+        var v = Number((env.context.character.memory && env.context.character.memory[k]) || 0);
+        out2 = thCompare(op3, v, thr3);
+
+      } else if (t === "memoryStringContains"){
+        var k2 = String(node.memKey || "");
+        var needle2 = String(node.text || "");
+        var ci2 = (node.caseInsensitive !== false);
+        var s2 = String((env.context.character.memory && env.context.character.memory[k2]) || "");
+        out2 = ci2 ? (s2.toLowerCase().indexOf(needle2.toLowerCase()) !== -1) : (s2.indexOf(needle2) !== -1);
+
+      } else if (t === "derivedNumberComparison"){
+        var dk = String(node.derivedKey || "");
+        var op4 = node.op || ">=";
+        var thr4 = (typeof node.threshold === "number") ? node.threshold : 0;
+        var dv = Number((env.derived && env.derived[dk]) || 0);
+        out2 = thCompare(op4, dv, thr4);
+
+      } else {
+        out2 = true;
+      }
+
+      if (node.not) out2 = !out2;
+      return out2;
+    }
+
+    function thEvalBlockConditions(block, env){
+      if (!block) return true;
+      if (block.type === "else") return true;
+      var join = (block.join === "or") ? "or" : "and";
+      var conds = block.conditions || [];
+      var i;
+
+      if (!conds.length) return true;
+
+      if (join === "or"){
+        for (i = 0; i < conds.length; i++){
+          if (thEvalNode(conds[i], env)) return true;
+        }
+        return false;
+      }
+
+      for (i = 0; i < conds.length; i++){
+        if (!thEvalNode(conds[i], env)) return false;
+      }
+      return true;
+    }
+
+    // ---------- Explainable Gates (teachable logic trace) ----------
+    function thFindFirstMatch(text, list){
+      var hay = String(text || "").toLowerCase();
+      var i;
+      for (i = 0; i < list.length; i++){
+        var raw = String(list[i] || "");
+        var needle = raw.toLowerCase();
+        if (!needle) continue;
+        if (hay.indexOf(needle) !== -1) return raw;
+      }
+      return "";
+    }
+
+    function thExplainLeaf(node, env, gateNo){
+      var t = node.type || "";
+      var out = { ok:true, lines:[] };
+
+      function push(s){ out.lines.push("Gate " + gateNo + " -> " + s); }
+
+      if (t === "anyInList" || t === "noneInList"){
+        var items = thGetListItems(node.listId);
+        var match = thFindFirstMatch(env.normLastUserMsg, items);
+        var ok = (t === "anyInList") ? !!match : !match;
+
+        if (t === "anyInList"){
+          if (ok) push('Target text included "' + match + '".');
+          else push('Target text did not include any of the target phrases.');
+        } else {
+          if (ok) push('Target text did not include any of the target phrases.');
+          else push('Target text included "' + match + '" (but it should NOT).');
+        }
+        out.ok = ok;
+
+      } else if (t === "countInHistory"){
+        var items2 = thGetListItems(node.listId);
+        var win = (typeof node.windowSize === "number") ? node.windowSize : 10;
+        var op = node.op || ">=";
+        var thr = (typeof node.threshold === "number") ? node.threshold : 1;
+        var cnt = thCountMatchesInHistory(env.normHistory, items2, win);
+        var ok2 = thCompare(op, cnt, thr);
+        push('In the last ' + win + ' message(s), the count was ' + cnt + ' (needs ' + op + ' ' + thr + ').');
+        out.ok = ok2;
+
+      } else if (t === "messageCountComparison"){
+        var op2 = node.op || ">=";
+        var thr2 = (typeof node.threshold === "number") ? node.threshold : 1;
+        var mc = env.messageCount || 0;
+        var ok3 = thCompare(op2, mc, thr2);
+        push('Message count was ' + mc + ' (needs ' + op2 + ' ' + thr2 + ').');
+        out.ok = ok3;
+
+      } else if (t === "messageHistoryContains"){
+        var needleH = thNormalize(String(node.text || ""));
+        var winH = (typeof node.windowSize === "number") ? node.windowSize : 5;
+        var lenH = env.normHistory.length;
+        var startH = 0;
+        if (winH && winH > 0 && winH < lenH) startH = lenH - winH;
+        var idxFound = -1;
+        var ii;
+        for (ii = startH; ii < lenH; ii++){
+          if (env.normHistory[ii].indexOf(needleH) !== -1){ idxFound = ii; break; }
+        }
+        var okH = (idxFound !== -1);
+        if (okH) push('Last ' + winH + ' messages included "' + String(node.text || "") + '" (found in Message ' + (idxFound + 1) + ').');
+        else push('Last ' + winH + ' messages did not include "' + String(node.text || "") + '".');
+        out.ok = okH;
+      } else if (t === "personalityContains" || t === "scenarioContains"){
+        var fieldName = (t === "personalityContains") ? "Personality" : "Scenario";
+        var hay = (t === "personalityContains") ? String(env.context.character.personality || "") : String(env.context.character.scenario || "");
+        var needle = String(node.text || "");
+        var ci = (node.caseInsensitive !== false);
+        var ok4 = ci ? (hay.toLowerCase().indexOf(needle.toLowerCase()) !== -1) : (hay.indexOf(needle) !== -1);
+        push(fieldName + (ok4 ? ' included "' : ' did not include "') + needle + '".');
+        out.ok = ok4;
+
+      } else if (t === "memoryNumberComparison"){
+        var k = String(node.memKey || "");
+        var op3 = node.op || ">=";
+        var thr3 = (typeof node.threshold === "number") ? node.threshold : 0;
+        var v = Number((env.context.character.memory && env.context.character.memory[k]) || 0);
+        var ok5 = thCompare(op3, v, thr3);
+        push('Memory number "' + k + '" was ' + v + ' (needs ' + op3 + ' ' + thr3 + ').');
+        out.ok = ok5;
+
+      } else if (t === "memoryStringContains"){
+        var k2 = String(node.memKey || "");
+        var needle2 = String(node.text || "");
+        var ci2 = (node.caseInsensitive !== false);
+        var s2 = String((env.context.character.memory && env.context.character.memory[k2]) || "");
+        var ok6 = ci2 ? (s2.toLowerCase().indexOf(needle2.toLowerCase()) !== -1) : (s2.indexOf(needle2) !== -1);
+        push('Memory text "' + k2 + '"' + (ok6 ? ' included "' : ' did not include "') + needle2 + '".');
+        out.ok = ok6;
+
+      } else if (t === "derivedNumberComparison"){
+        var dk = String(node.derivedKey || "");
+        var op4 = node.op || ">=";
+        var thr4 = (typeof node.threshold === "number") ? node.threshold : 0;
+        var dv = Number((env.derived && env.derived[dk]) || 0);
+        var ok7 = thCompare(op4, dv, thr4);
+        push('Derived "' + dk + '" was ' + dv + ' (needs ' + op4 + ' ' + thr4 + ').');
+        out.ok = ok7;
+
+      } else {
+        push("Condition type '" + t + "' was treated as always true.");
+        out.ok = true;
+      }
+
+      if (node.not){
+        var before = out.ok;
+        out.ok = !out.ok;
+        out.lines.push("Gate " + gateNo + " -> NOT applied (" + (before ? "pass" : "fail") + " becomes " + (out.ok ? "pass" : "fail") + ").");
+      }
+
+      return out;
+    }
+
+    function thExplainNode(node, env, counter){
+      // Returns { ok, lines[] }
+      if (!node) return { ok:true, lines:[] };
+
+      if (node.nodeType === "group"){
+        var join = (node.join === "or") ? "or" : "and";
+        var kids = node.children || [];
+        var i;
+        var allLines = [];
+        var results = [];
+        var firstFailGate = null;
+        var firstPassGate = null;
+
+        for (i = 0; i < kids.length; i++){
+          var r = thExplainNode(kids[i], env, counter);
+          // merge
+          var j;
+          for (j = 0; j < r.lines.length; j++) allLines.push(r.lines[j]);
+          results.push(!!r.ok);
+          if (r.ok && firstPassGate == null) firstPassGate = true;
+          if (!r.ok && firstFailGate == null) firstFailGate = true;
+        }
+
+        var ok;
+        if (!kids.length){
+          ok = true;
+          allLines.push("Group " + (join === "or" ? "OR" : "AND") + " -> (no gates) Result: PASSED.");
+        } else if (join === "or"){
+          ok = false;
+          for (i = 0; i < results.length; i++) if (results[i]) { ok = true; break; }
+          allLines.push("Group OR -> Any gate can pass. Result: " + (ok ? "PASSED." : "FAILED (no gates passed)."));
+        } else {
+          ok = true;
+          for (i = 0; i < results.length; i++) if (!results[i]) { ok = false; break; }
+          allLines.push("Group AND -> All gates must pass. Result: " + (ok ? "PASSED." : "FAILED (at least one gate failed)."));
+        }
+
+        if (node.not){
+          var before2 = ok;
+          ok = !ok;
+          allLines.push("Group " + (join === "or" ? "OR" : "AND") + " -> NOT applied (" + (before2 ? "pass" : "fail") + " becomes " + (ok ? "pass" : "fail") + ").");
+        }
+
+        return { ok: ok, lines: allLines };
+      }
+
+      // leaf
+      counter.n++;
+      return thExplainLeaf(node, env, counter.n);
+    }
+
+    function thExplainBlockConditions(block, env){
+      // Returns { ok, lines[] }
+      if (!block) return { ok:true, lines:[] };
+      if (block.type === "else") return { ok:true, lines:[] };
+
+      var join = (block.join === "or") ? "or" : "and";
+      var conds = block.conditions || [];
+      if (!conds.length) return { ok:true, lines:["(no gates)"] };
+
+      var counter = env._gateCounter || { n:0 };
+      env._gateCounter = counter;
+
+      var all = [];
+      var i, ok;
+
+      if (join === "or"){
+        ok = false;
+        for (i = 0; i < conds.length; i++){
+          var r = thExplainNode(conds[i], env, counter);
+          var j;
+          for (j = 0; j < r.lines.length; j++) all.push(r.lines[j]);
+          if (r.ok) ok = true;
+        }
+        all.push("Gate Join OR -> Any top-level gate can pass. Result: " + (ok ? "PASSED." : "FAILED."));
+      } else {
+        ok = true;
+        for (i = 0; i < conds.length; i++){
+          var r2 = thExplainNode(conds[i], env, counter);
+          var j2;
+          for (j2 = 0; j2 < r2.lines.length; j2++) all.push(r2.lines[j2]);
+          if (!r2.ok) ok = false;
+        }
+        all.push("Gate Join AND -> All top-level gates must pass. Result: " + (ok ? "PASSED." : "FAILED."));
+      }
+
+      return { ok: ok, lines: all };
+    }
+
+
+    function thComputeDerived(env){
+      var out = {};
+      var i;
+      for (i = 0; i < appState.derived.length; i++){
+        var d = appState.derived[i];
+        if (!d || !d.key) continue;
+        var items = thGetListItems(d.listId);
+        var win = (typeof d.windowSize === "number") ? d.windowSize : 10;
+        out[d.key] = thCountMatchesInHistory(env.normHistory, items, win);
+      }
+      return out;
+    }
+
+    function thApplyAction(action, context, ran){
+      if (!action) return;
+
+      var target = action.target || "context.character.personality";
+      var mode = action.mode || "append";
+      var text = (action.text != null) ? String(action.text) : "";
+      var label = action.label ? String(action.label) : "";
+      var memKey = action.memKey ? String(action.memKey) : "";
+
+      context.character = context.character || {};
+      context.character.memory = context.character.memory || {};
+
+      function note(s){
+        ran.push(s + (label ? (" [" + label + "]") : ""));
+      }
+
+      if (target === "context.character.personality"){
+        if (mode === "set") context.character.personality = text;
+        else {
+          var curPer = String(context.character.personality || "");
+          context.character.personality = curPer ? (curPer + "\n" + text) : text;
+        }
+        note("personality " + mode);
+
+      } else if (target === "context.character.scenario"){
+        if (mode === "set") context.character.scenario = text;
+        else {
+          var curScn = String(context.character.scenario || "");
+          context.character.scenario = curScn ? (curScn + "\n" + text) : text;
+        }
+        note("scenario " + mode);
+
+      } else if (target === "memoryNumeric"){
+        var n = parseFloat(text);
+        if (isNaN(n)) n = 0;
+        if (!memKey) memKey = "unnamed";
+        if (mode === "set") context.character.memory[memKey] = n;
+        else context.character.memory[memKey] = Number(context.character.memory[memKey] || 0) + n;
+        note("memoryNumeric[" + memKey + "] " + mode + " " + n);
+
+      } else if (target === "memoryString"){
+        if (!memKey) memKey = "unnamed";
+        if (mode === "set") context.character.memory[memKey] = text;
+        else {
+          var curMem = String(context.character.memory[memKey] || "");
+          context.character.memory[memKey] = curMem ? (curMem + "\n" + text) : text;
+        }
+        note("memoryString[" + memKey + "] " + mode);
+      }
+    }
+
+    function thRunEvaluation(){
+      // sync current builder UI -> appState
+      buildBlocksFromUI();
+      buildDerivedFromUI();
+
+      var ctx = { chat: {}, character: {} };
+      ctx.character.personality = String(thEl("thPersonality").value || "");
+      ctx.character.scenario = String(thEl("thScenario").value || "");
+      ctx.character.memory = {};
+
+      var last = [];
+      var i;
+      for (i = 0; i < thState.messages.length; i++){
+        last.push({ message: String(thState.messages[i].text || "") });
+      }
+      ctx.chat.last_messages = last;
+
+      var rawLast = last.length ? String(last[last.length - 1].message || "") : "";
+      var env = {
+        context: ctx,
+        messageCount: last.length,
+        normLastUserMsg: thNormalize(rawLast),
+        normHistory: [],
+        derived: {}
+      };
+
+      for (i = 0; i < last.length; i++){
+        env.normHistory.push(thNormalize(String(last[i].message || "")));
+      }
+
+      env.derived = thComputeDerived(env);
+      env._gateCounter = { n: 0 }; // gate numbering for explainable trace
+
+      var lines = [];
+      lines.push("=== Derived Values ===");
+      var k, any = false;
+      for (k in env.derived){
+        if (env.derived.hasOwnProperty(k)){
+          any = true;
+          lines.push(k + ": " + env.derived[k]);
+        }
+      }
+      if (!any) lines.push("(none)");
+
+      lines.push("");
+      lines.push("=== Block Trace ===");
+
+      var hasIf = false;
+      var hasElse = false;
+      var chainTaken = false;
+      var anyOutput = false;
+      var anyExecuted = false;
+
+      for (i = 0; i < appState.blocks.length; i++){
+        var b = appState.blocks[i];
+        var explain = (b.type === "else") ? { ok:true, lines:[] } : thExplainBlockConditions(b, env);
+        var cond = (b.type === "else") ? true : !!explain.ok;
+
+        var eligible = true;
+        var executed = false;
+
+        if (b.type === "if"){
+          hasIf = true; hasElse = false; chainTaken = false;
+          eligible = true;
+          executed = !!cond;
+          if (executed) chainTaken = true;
+
+        } else if (b.type === "elseif"){
+          if (hasIf && !hasElse){
+            eligible = !chainTaken;
+            executed = eligible && !!cond;
+            if (executed) chainTaken = true;
+          } else {
+            // standalone IF
+            hasIf = true; hasElse = false; chainTaken = false;
+            eligible = true;
+            executed = !!cond;
+            if (executed) chainTaken = true;
+          }
+
+        } else if (b.type === "else"){
+          cond = true;
+          if (hasIf && !hasElse){
+            eligible = !chainTaken;
+            executed = eligible;
+            hasElse = true;
+            if (executed) chainTaken = true;
+          } else {
+            // standalone IF(true)
+            hasIf = true; hasElse = false; chainTaken = true;
+            eligible = true;
+            executed = true;
+          }
+        }
+
+        if (executed) anyExecuted = true;
+
+        var ran = [];
+        if (executed && b.actions && b.actions.length){
+          var a;
+          for (a = 0; a < b.actions.length; a++){
+            thApplyAction(b.actions[a], ctx, ran);
+          }
+        }
+
+        if (ran.length) anyOutput = true;
+
+        var name = b.label ? (" [" + b.label + "]") : "";
+        lines.push((i+1) + ". " + String(b.type || "").toUpperCase() + name +
+          " | cond=" + (b.type === "else" ? "(n/a)" : (cond ? "true" : "false")) +
+          " | eligible=" + (eligible ? "yes" : "no") +
+          " | executed=" + (executed ? "YES" : "no"));
+
+        if (b.type !== "else" && explain && explain.lines && explain.lines.length){
+          var gi;
+          for (gi = 0; gi < explain.lines.length; gi++){
+            lines.push("   " + explain.lines[gi]);
+          }
+        }
+
+
+        if (ran.length) lines.push("   actions: " + ran.join("; "));
+      }
+
+      lines.push("");
+      if (!anyExecuted){
+        lines.push("Output -> No Output Condition Reached.");
+      } else if (!anyOutput){
+        lines.push("Output -> A condition executed, but no actions were produced.");
+      } else {
+        lines.push("Output -> Actions were produced (see per-block actions above).");
+      }
+
+      lines.push("");
+      lines.push("=== Final Personality ===");
+      lines.push(String(ctx.character.personality || ""));
+      lines.push("");
+      lines.push("=== Final Scenario ===");
+      lines.push(String(ctx.character.scenario || ""));
+      lines.push("");
+      lines.push("=== Final Memory ===");
+      lines.push(JSON.stringify(ctx.character.memory || {}, null, 2));
+
+      var out = thEl("thResults");
+      if (out) out.textContent = lines.join("\n");
+    }
+
+    function thRenderMessages(){
+      var wrap = thEl("thMessages");
+      if (!wrap) return;
+      wrap.innerHTML = "";
+
+      if (!thState.messages.length){
+        var empty = document.createElement("div");
+        empty.className = "small-label";
+        empty.textContent = "(no test messages yet)";
+        wrap.appendChild(empty);
+        return;
+      }
+
+      var i;
+      for (i = 0; i < thState.messages.length; i++){
+        (function(idx){
+          var row = document.createElement("div");
+          row.className = "derived-row";
+          row.style.marginBottom = "8px";
+
+          var hdr = document.createElement("div");
+          hdr.className = "trigger-block-header";
+          hdr.innerHTML = "<span>Message " + (idx+1) + "</span>";
+          row.appendChild(hdr);
+
+          var btnUp = document.createElement("button");
+          btnUp.type = "button";
+          btnUp.className = "btn";
+          btnUp.textContent = "Up";
+          btnUp.onclick = function(){
+            if (idx <= 0) return;
+            var tmp = thState.messages[idx-1];
+            thState.messages[idx-1] = thState.messages[idx];
+            thState.messages[idx] = tmp;
+            thRenderMessages();
+          };
+
+          var btnDown = document.createElement("button");
+          btnDown.type = "button";
+          btnDown.className = "btn";
+          btnDown.textContent = "Down";
+          btnDown.onclick = function(){
+            if (idx >= thState.messages.length-1) return;
+            var tmp2 = thState.messages[idx+1];
+            thState.messages[idx+1] = thState.messages[idx];
+            thState.messages[idx] = tmp2;
+            thRenderMessages();
+          };
+
+          var btnRm = document.createElement("button");
+          btnRm.type = "button";
+          btnRm.className = "btn";
+          btnRm.textContent = "Remove";
+          btnRm.onclick = function(){
+            thState.messages.splice(idx, 1);
+            thRenderMessages();
+          };
+
+          var btnRow = document.createElement("div");
+          btnRow.appendChild(btnUp);
+          btnRow.appendChild(btnDown);
+          btnRow.appendChild(btnRm);
+          row.appendChild(btnRow);
+
+          var ta = document.createElement("textarea");
+          ta.style.width = "100%";
+          ta.style.minHeight = "60px";
+          ta.value = String(thState.messages[idx].text || "");
+          ta.oninput = function(){ thState.messages[idx].text = ta.value; };
+          row.appendChild(ta);
+
+          wrap.appendChild(row);
+        })(i);
+      }
+    }
+
+    // Event delegation (so buttons work even if panels rerender)
+    document.addEventListener("click", function(e){
+      var t = e.target;
+      if (!t || !t.id) return;
+
+      if (t.id === "thAddMsg"){
+        thState.messages.push({ text: "" });
+        thRenderMessages();
+        return;
+      }
+      if (t.id === "thRun"){
+        try { thRunEvaluation(); }
+        catch (err){
+          var out = thEl("thResults");
+          if (out) out.textContent = "ERROR:\n" + (err && err.message ? err.message : String(err));
+        }
+        return;
+      }
+      if (t.id === "thResetResults"){
+        var out2 = thEl("thResults");
+        if (out2) out2.textContent = "";
+        return;
+      }
+      if (t.id === "thResetAll"){
+        var p = thEl("thPersonality"); if (p) p.value = "";
+        var s = thEl("thScenario"); if (s) s.value = "";
+        thState.messages = [];
+        thRenderMessages();
+        var out3 = thEl("thResults"); if (out3) out3.textContent = "";
+        return;
+      }
+    }, false);
+
+
+    // ==========================
+    // UI: Debug collapse + Harness results visibility
+    // ==========================
+    function bindDebugCollapse(){
+      var sec = document.getElementById("debugSection");
+      var btn = document.getElementById("btnToggleDebug");
+      if (!sec || !btn) return;
+      btn.onclick = function(){
+        var collapsed = (sec.getAttribute("data-collapsed") === "true");
+        collapsed = !collapsed;
+        sec.setAttribute("data-collapsed", collapsed ? "true" : "false");
+        var body = sec.getElementsByClassName("section-body")[0];
+        if (body) body.style.display = collapsed ? "none" : "";
+        btn.textContent = collapsed ? "Expand" : "Collapse";
+      };
+    }
+
+    function bindHarnessResultsVisibility(){
+      var out = document.getElementById("thResults");
+      if (out) {
+        // start hidden (clean UI)
+        out.style.display = "none";
+      }
+      function show(){ if(out){ out.style.display = ""; } }
+      function hide(){ if(out){ out.style.display = "none"; } }
+
+      var runBtn = document.getElementById("thRun");
+      var r1 = document.getElementById("thResetResults");
+      var r2 = document.getElementById("thResetAll");
+
+      if (runBtn){
+        runBtn.addEventListener("click", function(){ show(); }, false);
+      }
+      if (r1){
+        r1.addEventListener("click", function(){ hide(); }, false);
+      }
+      if (r2){
+        r2.addEventListener("click", function(){ hide(); }, false);
+      }
+    }
+
+
+window.onload = function () {
+      bindListUI();
+      bindDerivedUI();
+      bindTriggerUI();
+      refreshListsDisplay();
+      refreshExistingListsSelect();
+      refreshDebug();
+
+      // init test harness UI
+      thRenderMessages();
+      bindDebugCollapse();
+      bindHarnessResultsVisibility();
+
+    };
+  </script>
+</body>
+</html>

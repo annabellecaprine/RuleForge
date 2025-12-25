@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>RuleForge: Tavern Edition</title>
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/panels.css">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+  <link rel="manifest" href="site.webmanifest">
+
+</head>
+
+<body>
+
+  <!-- Header -->
+  <header class="hdr">
+    <div class="brand">
+      <div class="brand-title">RuleForge<span class="brand-ver">TE</span></div>
+      <div class="brand-sub">Tavern Edition • Script Builder • Outputs ES5 for JanitorAI</div>
+    </div>
+
+    <div class="hdr-right">
+      <button class="btn btn-danger" id="btn-clear-all" type="button">⚠ Clear All Data</button>
+      <button class="btn btn-ghost" id="btn-help" type="button">Help</button>
+    </div>
+  </header>
+
+  <!-- Parent Tabs: Basic / Advanced -->
+  <nav class="parent-tabs" role="tablist" aria-label="Workspace">
+    <button class="tab active" id="parent-basic" data-parent="basic" role="tab" aria-selected="true">Basic</button>
+    <button class="tab" id="parent-advanced" data-parent="advanced" role="tab" aria-selected="false">Advanced</button>
+  </nav>
+
+  <!-- BASIC WRAP -->
+  <main id="wrap-basic" class="wrap" role="region" aria-label="Basic Workspace">
+
+    <div class="studio-grid">
+
+      <!-- Left “book tabs” navigation -->
+      <aside class="side-tabs" aria-label="Panels">
+        <div class="side-tabs-inner" id="side-tabs-basic">
+          <!-- ui.shell.js renders fixed-order panel buttons here -->
+        </div>
+      </aside>
+
+      <!-- Active Panel View -->
+      <section class="panel-viewport" aria-label="Active Panel View">
+
+        <!-- LOREBOOK -->
+        <section class="panel panel-page" id="panel-lorebook" data-panel="lorebook" role="region" aria-label="Lorebook">
+          <div class="panel-hd">
+            <div class="panel-title">Lorebook</div>
+
+            <div class="panel-meta">
+              <div class="meta-group">
+                <span class="meta-label">Priority</span>
+                <input class="inp inp-num" id="prio-lorebook" type="number" min="0" max="999" step="1" />
+              </div>
+
+              <button class="pwr" id="pwr-lorebook" type="button" aria-pressed="true">
+                <span class="dot dot-on" aria-hidden="true"></span>
+                <span class="pwr-label">On</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="panel-bd">
+            <div id="lorebook-root"></div>
+          </div>
+        </section>
+        <section class="panel panel-page is-hidden" id="panel-voices" data-panel="voices" role="region"
+          aria-label="Voices">
+          <div class="panel-hd">
+            <div class="panel-title">Voices</div>
+            <div class="panel-meta">
+              <div class="meta-group">
+                <span class="meta-label">Priority</span>
+                <input class="inp inp-num" id="prio-voices" type="number" min="0" max="999" step="1" />
+              </div>
+              <button class="pwr" id="pwr-voices" type="button" aria-pressed="true">
+                <span class="dot dot-on" aria-hidden="true"></span>
+                <span class="pwr-label">On</span>
+              </button>
+            </div>
+          </div>
+          <div class="panel-bd">
+            <div id="voices-root"></div>
+          </div>
+        </section>
+
+        <!-- MEMORY -->
+        <section class="panel panel-page is-hidden" id="panel-memory" data-panel="memory" role="region"
+          aria-label="Memory">
+          <div class="panel-hd">
+            <div class="panel-title">Memory</div>
+            <div class="panel-meta">
+              <div class="meta-group">
+                <span class="meta-label">Priority</span>
+                <input class="inp inp-num" id="prio-memory" type="number" min="0" max="999" step="1" />
+              </div>
+              <button class="pwr" id="pwr-memory" type="button" aria-pressed="true">
+                <span class="dot dot-on" aria-hidden="true"></span>
+                <span class="pwr-label">On</span>
+              </button>
+            </div>
+          </div>
+          <div class="panel-bd">
+            <div id="memory-root"></div>
+          </div>
+        </section>
+
+        <!-- EVENTS -->
+        <section class="panel panel-page is-hidden" id="panel-events" data-panel="events" role="region"
+          aria-label="Events">
+          <div class="panel-hd">
+            <div class="panel-title">Events</div>
+            <div class="panel-meta">
+              <div class="meta-group">
+                <span class="meta-label">Priority</span>
+                <input class="inp inp-num" id="prio-events" type="number" min="0" max="999" step="1" />
+              </div>
+              <button class="pwr" id="pwr-events" type="button" aria-pressed="true">
+                <span class="dot dot-on" aria-hidden="true"></span>
+                <span class="pwr-label">On</span>
+              </button>
+            </div>
+          </div>
+          <div class="panel-bd">
+            <div id="events-root"></div>
+          </div>
+        </section>
+
+        <!-- TONE -->
+        <section class="panel panel-page is-hidden" id="panel-tone" data-panel="tone" role="region" aria-label="Tone">
+          <div class="panel-hd">
+            <div class="panel-title">Tone</div>
+            <div class="panel-meta">
+              <div class="meta-group">
+                <span class="meta-label">Priority</span>
+                <input class="inp inp-num" id="prio-tone" type="number" min="0" max="999" step="1" />
+              </div>
+              <button class="pwr" id="pwr-tone" type="button" aria-pressed="true">
+                <span class="dot dot-on" aria-hidden="true"></span>
+                <span class="pwr-label">On</span>
+              </button>
+            </div>
+          </div>
+          <div class="panel-bd">
+            <div id="tone-root"></div>
+          </div>
+        </section>
+
+        <!-- AMBIENT -->
+        <section class="panel panel-page is-hidden" id="panel-ambient" data-panel="ambient" role="region"
+          aria-label="Ambient">
+          <div class="panel-hd">
+            <div class="panel-title">Ambient</div>
+            <div class="panel-meta">
+              <div class="meta-group">
+                <span class="meta-label">Priority</span>
+                <input class="inp inp-num" id="prio-ambient" type="number" min="0" max="999" step="1" />
+              </div>
+              <button class="pwr" id="pwr-ambient" type="button" aria-pressed="true">
+                <span class="dot dot-on" aria-hidden="true"></span>
+                <span class="pwr-label">On</span>
+              </button>
+            </div>
+          </div>
+          <div class="panel-bd">
+            <div id="ambient-root"></div>
+          </div>
+        </section>
+
+        <!-- RANDOM -->
+        <section class="panel panel-page is-hidden" id="panel-random" data-panel="random" role="region"
+          aria-label="Random Events">
+          <div class="panel-hd">
+            <div class="panel-title">Random Events</div>
+            <div class="panel-meta">
+              <div class="meta-group">
+                <span class="meta-label">Priority</span>
+                <input class="inp inp-num" id="prio-random" type="number" min="0" max="999" step="1" />
+              </div>
+              <button class="pwr" id="pwr-random" type="button" aria-pressed="true">
+                <span class="dot dot-on" aria-hidden="true"></span>
+                <span class="pwr-label">On</span>
+              </button>
+            </div>
+          </div>
+          <div class="panel-bd">
+            <div id="random-root"></div>
+          </div>
+        </section>
+
+
+
+        <!-- COMBINED -->
+        <section class="panel panel-page is-hidden" id="panel-conditionCombiner" data-panel="conditionCombiner"
+          role="region" aria-label="Condition Combiner">
+          <div class="panel-hd">
+            <div class="panel-title">Condition Combiner</div>
+            <div class="panel-meta">
+              <div class="meta-group">
+                <span class="meta-label">Priority</span>
+                <input class="inp inp-num" id="prio-conditionCombiner" type="number" min="0" max="999" step="1" />
+              </div>
+              <button class="pwr" id="pwr-conditionCombiner" type="button" aria-pressed="true">
+                <span class="dot dot-on" aria-hidden="true"></span>
+                <span class="pwr-label">On</span>
+              </button>
+            </div>
+          </div>
+          <div class="panel-bd">
+            <div id="conditionCombiner-root"></div>
+          </div>
+        </section>
+
+        <!-- SCORING -->
+        <section class="panel panel-page is-hidden" id="panel-scoring" data-panel="scoring" role="region"
+          aria-label="Scoring">
+          <div class="panel-hd">
+            <div class="panel-title">Scoring</div>
+            <div class="panel-meta">
+              <div class="meta-group">
+                <span class="meta-label">Priority</span>
+                <input class="inp inp-num" id="prio-scoring" type="number" min="0" max="999" step="1" />
+              </div>
+              <button class="pwr" id="pwr-scoring" type="button" aria-pressed="false">
+                <span class="dot dot-off" aria-hidden="true"></span>
+                <span class="pwr-label">Off</span>
+              </button>
+            </div>
+          </div>
+          <div class="panel-bd">
+            <div id="scoring-root"></div>
+          </div>
+        </section>
+
+        <!-- ENGINE -->
+        <section class="panel panel-page is-hidden" id="panel-engine" data-panel="engine" role="region"
+          aria-label="Engine">
+          <div class="panel-hd">
+            <div class="panel-title">Engine</div>
+            <div class="panel-meta">
+              <div class="meta-group">
+                <span class="meta-label">Priority</span>
+                <input class="inp inp-num" id="prio-engine" type="number" min="0" max="999" step="1" />
+              </div>
+              <button class="pwr" id="pwr-engine" type="button" aria-pressed="true">
+                <span class="dot dot-on" aria-hidden="true"></span>
+                <span class="pwr-label">On</span>
+              </button>
+            </div>
+          </div>
+          <div class="panel-bd">
+            <div id="engine-root"></div>
+          </div>
+        </section>
+
+      </section>
+    </div>
+  </main>
+
+  <!-- ADVANCED WRAP -->
+  <main id="wrap-advanced" class="wrap is-hidden" role="region" aria-label="Advanced Workspace">
+    <div class="studio-grid">
+
+      <aside class="side-tabs" aria-label="Advanced Panels">
+        <div class="side-tabs-inner" id="side-tabs-advanced">
+          <button class="side-tab active" data-tab="adv-editor" type="button">Editor</button>
+          <button class="side-tab" data-tab="adv-tools" type="button">Tools</button>
+        </div>
+      </aside>
+
+      <section class="panel-viewport" aria-label="Advanced Panel View">
+        <section class="panel panel-page" id="panel-adv-editor" data-panel="adv-editor" role="region"
+          aria-label="Advanced Editor">
+          <div class="panel-bd">
+            <div id="adv-editor-root"></div>
+
+          </div>
+        </section>
+
+
+        <section class="panel panel-page is-hidden" id="panel-adv-tools" data-panel="adv-tools" role="region"
+          aria-label="Advanced Tools">
+          <div class="panel-bd">
+            <div id="adv-tools-root" class="placeholder">
+              <h3>Tools</h3>
+              <p>Future: evaluator, conflict inspector, diagnostics.</p>
+            </div>
+          </div>
+        </section>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Foundation scripts -->
+  <script src="js/lib/sources.js"></script>
+  <script src="js/lib/sources.defaults.js"></script>
+  <script src="js/app/sim.js"></script>
+
+  <script src="js/lib/reasons.js"></script>
+  <script src="js/lib/eval.core.js"></script>
+  <script src="js/lib/eval.print.js"></script>
+  <script src="js/core/export.core.js"></script>
+  <script src="js/core/export.package.js"></script>
+
+  <script src="js/lib/dsl.validate.js"></script>
+  <script src="js/lib/dsl.compile.js"></script>
+
+  <!-- Panels registry FIRST -->
+  <script src="js/panels/panels.registry.js"></script>
+
+  <!-- App init AFTER registry -->
+  <script src="js/app/init.js"></script>
+
+  <!-- Panels (EXCEPT old Advanced editor) -->
+  <script src="js/core/engine.runtime.js"></script>
+  <script src="js/panels/lorebook.panel.js"></script>
+  <script src="js/panels/voices.panel.js"></script>
+  <script src="js/panels/memory.panel.js"></script>
+  <script src="js/panels/events.panel.js"></script>
+  <script src="js/panels/tone.panel.js"></script>
+  <script src="js/panels/ambient.panel.js"></script>
+  <script src="js/panels/random.panel.js"></script>
+  <script src="js/panels/conditionCombiner.panel.js"></script>
+  <script src="js/panels/scoring.panel.js"></script>
+  <script src="js/panels/engine.panel.js"></script>
+  <!-- NOTE: sitebuilderx.panel.js is intentionally NOT loaded -->
+
+  <!-- Advanced SBX internal library -->
+  <script src="js/advanced/sbx.ns.js"></script>
+  <script src="js/advanced/sbx.util.js"></script>
+  <script src="js/advanced/sbx.store.js"></script>
+  <script src="js/advanced/sbx.dom.js"></script>
+  <script src="js/advanced/sbx.css.js"></script>
+  <script src="js/advanced/sbx.tabs.js"></script>
+
+  <script src="js/advanced/sbx.model.js"></script>
+  <script src="js/advanced/sbx.module.registry.js"></script>
+  <script src="js/advanced/sbx.import.basic.js"></script>
+
+  <script src="js/advanced/sbx.compiler.js"></script>
+  <script src="js/advanced/sbx.codegen.js"></script>
+
+  <script src="js/advanced/sbx.testcore.js"></script>
+  <script src="js/advanced/sbx.testrunner.js"></script>
+
+  <script src="js/advanced/sbx.engine.page.js"></script>
+  <script src="js/advanced/sbx.test.page.js"></script>
+  <script src="js/advanced/sbx.module.page.js"></script>
+
+  <script src="js/advanced/sbx.advanced.modules.js"></script>
+  <script src="js/advanced/sbx.advanced.engine.js"></script>
+  <script src="js/advanced/sbx.advanced.test.js"></script>
+  <script src="js/advanced/sbx.advanced.shell.js"></script>
+
+  <!-- REGISTER Advanced Editor panel -->
+  <script>
+    (function () {
+      'use strict';
+
+      if (!window.Panels || typeof window.Panels.register !== 'function') {
+        console.error('Panels system not available');
+        return;
+      }
+
+      Panels.register({
+        id: 'adv-editor',
+
+        mount: function (panelEl, studioState) {
+          var host = panelEl && panelEl.querySelector
+            ? panelEl.querySelector('#adv-editor-root')
+            : null;
+
+          host = host || panelEl;
+          if (!host) return;
+
+          host.innerHTML = '';
+
+          if (!window.SBX || !SBX.advanced || typeof SBX.advanced.mount !== 'function') {
+            host.innerHTML =
+              '<div style="padding:12px">' +
+              '<strong>Advanced Editor failed to load</strong><br>' +
+              'SBX.advanced.mount is not available.' +
+              '</div>';
+            return;
+          }
+
+          SBX.advanced.mount(host, studioState);
+        }
+      });
+    })();
+  </script>
+
+  <!-- UI shell mounts panels -->
+  <script src="js/app/ui.shell.js"></script>
+
+  <!-- Optional smoketest (gated) -->
+  <script>window.__RUN_SMOKE_TEST__ = false;</script>
+  <script src="js/app/smoke.test.js"></script>
+
+
+
+
+</body>
+
+</html>

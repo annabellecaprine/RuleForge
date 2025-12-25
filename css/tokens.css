@@ -1,0 +1,73 @@
+/* ==========================================================================
+   tokens.css — THEME CONFIG (edit here to restyle everything)
+   --------------------------------------------------------------------------
+   Goal: centralize color + highlight tuning without digging through layout CSS.
+   main.css + panels.css should only reference vars defined here.
+   ========================================================================== */
+
+:root {
+  /* --- Base surfaces ---------------------------------------------------- */
+  --bg: #1A1411;
+  /* app background */
+  --panel-bg: #241B16;
+  /* main panel surface */
+  --panel-bg-2: #2B211B;
+  /* secondary panel surface */
+  --input-bg: #1E1713;
+  /* inputs/textarea background */
+
+  /* --- Lines + depth ---------------------------------------------------- */
+  --border: #3A2C24;
+  /* default border */
+  --shadow: 0 10px 30px rgba(0, 0, 0, .35);
+
+  /* --- Text ------------------------------------------------------------- */
+  --text: #F2E6D8;
+  /* primary text */
+  --muted: #C7B6A2;
+  /* muted text */
+
+  /* --- Accent / highlights --------------------------------------------- */
+  --accent: #E6A94D;
+  /* Brightened Forge Gold */
+  --accent-2: #CF8C2E;
+  /* Deep Forge Amber */
+  --amber-pop: #FF9800;
+  /* Firelight Pop */
+  --glow: 0 0 15px rgba(255, 152, 0, 0.25);
+
+  /* --- Status colors ---------------------------------------------------- */
+  --on: #68E534;
+  /* Brighter enabled dot */
+  --off: #FF4D4F;
+  /* disabled dot */
+  --danger: #FF3D00;
+  /* Forge Heat Destruction */
+  --danger-soft: rgba(255, 61, 0, 0.12);
+  --danger-text: #FF8A65;
+
+  /* --- Scrollbars ------------------------------------------------------- */
+  --sb-thumb: #4A372E;
+  --sb-track: #1A1411;
+
+  /* --- Derived helpers (tweak here to adjust “feel”) -------------------- */
+  --accent-border: rgba(230, 169, 77, 0.45);
+  --accent-border-strong: rgba(230, 169, 77, 0.75);
+  --accent-soft: rgba(230, 169, 77, 0.12);
+  --accent-soft-strong: rgba(230, 169, 77, 0.18);
+
+  /* Header gradient knobs */
+  --hdr-grad-a: rgba(43, 33, 27, 0.95);
+  --hdr-grad-b: rgba(20, 15, 12, 0.9);
+
+  /* Common radii (optional: unify rounding across app) */
+  --r-btn: 6px;
+  /* Sharper, more industrial/forge feel */
+  --r-tab: 8px;
+  --r-panel: 10px;
+  --r-pill: 20px;
+
+  /* Common button gradient knobs */
+  --btn-grad-a: rgba(230, 169, 77, 0.15);
+  --btn-grad-b: rgba(207, 140, 46, 0.05);
+}

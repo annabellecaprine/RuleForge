@@ -1,0 +1,46 @@
+Folder PATH listing
+Volume serial number is A093-3A5D
+C:.
+¦   filetree.txt
+¦   index.html
+¦   
++---css
+¦       main.css
+¦       main2.css
+¦       panels.css
+¦       tokens.css
+¦       
++---js
+    +---app
+    ¦       init.js
+    ¦       sim.js
+    ¦       smoke.test.js
+    ¦       ui.shell.js
+    ¦       
+    +---core
+    ¦       export.core.js
+    ¦       export.package.js
+    ¦       New Text Document.txt
+    ¦       
+    +---lib
+    ¦       dsl.compile.js
+    ¦       dsl.validate.js
+    ¦       eval.core.js
+    ¦       eval.print.js
+    ¦       reasons.js
+    ¦       sources.defaults.js
+    ¦       sources.js
+    ¦       
+    +---panels
+            ambient.panel.js
+            conditionCombiner.panel.js
+            engine.panel.js
+            events.panel.js
+            lorebook.panel.js
+            memory.panel.js
+            panels.registry.js
+            random.panel.js
+            scoring.panel.js
+            tone.panel.js
+            voices.panel.js
+            
