@@ -28,7 +28,7 @@
   }
 
   function clone(obj) {
-    try { return JSON.parse(JSON.stringify(obj)); } catch (_e) {}
+    try { return JSON.parse(JSON.stringify(obj)); } catch (_e) { }
     return obj;
   }
 
@@ -274,90 +274,90 @@
 
     if (type === 'anyInList' || type === 'noneInList') {
       html += '<label class="inline">Search from: ' +
-                '<select class="inp condListSelect">' +
-                  listOptionsHtml(sbxData, cond.listId) +
-                '</select>' +
-              '</label>' +
-              '<label class="inline" style="margin-left:6px;">Source: ' +
-                '<select class="inp condSourceSelect">' +
-                  '<option value="normLastUserMsg"' + (cond.source === 'normLastUserMsg' ? ' selected' : '') + '>Last user message (normalized)</option>' +
-                '</select>' +
-              '</label>';
+        '<select class="inp condListSelect">' +
+        listOptionsHtml(sbxData, cond.listId) +
+        '</select>' +
+        '</label>' +
+        '<label class="inline" style="margin-left:6px;">Source: ' +
+        '<select class="inp condSourceSelect">' +
+        '<option value="normLastUserMsg"' + (cond.source === 'normLastUserMsg' ? ' selected' : '') + '>Last user message (normalized)</option>' +
+        '</select>' +
+        '</label>';
     } else if (type === 'countInHistory') {
       html += '<label class="inline">Search from: ' +
-                '<select class="inp condListSelect">' +
-                  listOptionsHtml(sbxData, cond.listId) +
-                '</select>' +
-              '</label>' +
-              '<label class="inline" style="margin-left:6px;">Look at last N messages: ' +
-                '<input type="number" class="inp condWindowSize" value="' + esc(cond.windowSize || 8) + '" />' +
-              '</label>' +
-              '<label class="inline" style="margin-left:6px;">Count matches with (>=, >, ==, <=, <): ' +
-                '<select class="inp condOp">' +
-                  '<option value=">="' + (cond.op === '>=' ? ' selected' : '') + '>&gt;=</option>' +
-                  '<option value=">"' + (cond.op === '>' ? ' selected' : '') + '>&gt;</option>' +
-                  '<option value="=="' + (cond.op === '==' ? ' selected' : '') + '>==</option>' +
-                  '<option value="<="' + (cond.op === '<=' ? ' selected' : '') + '>&lt;=</option>' +
-                  '<option value="<"' + (cond.op === '<' ? ' selected' : '') + '>&lt;</option>' +
-                '</select>' +
-              '</label>' +
-              '<label class="inline" style="margin-left:6px;">Threshold: ' +
-                '<input type="number" class="inp condThreshold" value="' + esc(cond.threshold || 1) + '" />' +
-              '</label>';
+        '<select class="inp condListSelect">' +
+        listOptionsHtml(sbxData, cond.listId) +
+        '</select>' +
+        '</label>' +
+        '<label class="inline" style="margin-left:6px;">Look at last N messages: ' +
+        '<input type="number" class="inp condWindowSize" value="' + esc(cond.windowSize || 8) + '" />' +
+        '</label>' +
+        '<label class="inline" style="margin-left:6px;">Count matches with (>=, >, ==, <=, <): ' +
+        '<select class="inp condOp">' +
+        '<option value=">="' + (cond.op === '>=' ? ' selected' : '') + '>&gt;=</option>' +
+        '<option value=">"' + (cond.op === '>' ? ' selected' : '') + '>&gt;</option>' +
+        '<option value="=="' + (cond.op === '==' ? ' selected' : '') + '>==</option>' +
+        '<option value="<="' + (cond.op === '<=' ? ' selected' : '') + '>&lt;=</option>' +
+        '<option value="<"' + (cond.op === '<' ? ' selected' : '') + '>&lt;</option>' +
+        '</select>' +
+        '</label>' +
+        '<label class="inline" style="margin-left:6px;">Threshold: ' +
+        '<input type="number" class="inp condThreshold" value="' + esc(cond.threshold || 1) + '" />' +
+        '</label>';
     } else if (type === 'messageCountComparison') {
       html += '<label class="inline">Compare messageCount with (>=, >, ==, <=, <): ' +
-                '<select class="inp condOp">' +
-                  '<option value=">="' + (cond.op === '>=' ? ' selected' : '') + '>&gt;=</option>' +
-                  '<option value=">"' + (cond.op === '>' ? ' selected' : '') + '>&gt;</option>' +
-                  '<option value="=="' + (cond.op === '==' ? ' selected' : '') + '>==</option>' +
-                  '<option value="<="' + (cond.op === '<=' ? ' selected' : '') + '>&lt;=</option>' +
-                  '<option value="<"' + (cond.op === '<' ? ' selected' : '') + '>&lt;</option>' +
-                '</select>' +
-              '</label>' +
-              '<label class="inline" style="margin-left:6px;">Threshold: ' +
-                '<input type="number" class="inp condThreshold" value="' + esc(cond.threshold || 1) + '" />' +
-              '</label>';
+        '<select class="inp condOp">' +
+        '<option value=">="' + (cond.op === '>=' ? ' selected' : '') + '>&gt;=</option>' +
+        '<option value=">"' + (cond.op === '>' ? ' selected' : '') + '>&gt;</option>' +
+        '<option value="=="' + (cond.op === '==' ? ' selected' : '') + '>==</option>' +
+        '<option value="<="' + (cond.op === '<=' ? ' selected' : '') + '>&lt;=</option>' +
+        '<option value="<"' + (cond.op === '<' ? ' selected' : '') + '>&lt;</option>' +
+        '</select>' +
+        '</label>' +
+        '<label class="inline" style="margin-left:6px;">Threshold: ' +
+        '<input type="number" class="inp condThreshold" value="' + esc(cond.threshold || 1) + '" />' +
+        '</label>';
     } else if (type === 'memoryNumberComparison' || type === 'memoryStringContains') {
       html += '<label class="inline">Memory key: ' +
-                '<input type="text" class="inp condMemKey" value="' + esc(cond.memKey || '') + '" placeholder="e.g. affection" />' +
-              '</label>';
+        '<input type="text" class="inp condMemKey" value="' + esc(cond.memKey || '') + '" placeholder="e.g. affection" />' +
+        '</label>';
 
       if (type === 'memoryNumberComparison') {
         html += '<label class="inline" style="margin-left:6px;">Compare with (>=, >, ==, <=, <): ' +
-                  '<select class="inp condOp">' +
-                    '<option value=">="' + (cond.op === '>=' ? ' selected' : '') + '>&gt;=</option>' +
-                    '<option value=">"' + (cond.op === '>' ? ' selected' : '') + '>&gt;</option>' +
-                    '<option value="=="' + (cond.op === '==' ? ' selected' : '') + '>==</option>' +
-                    '<option value="<="' + (cond.op === '<=' ? ' selected' : '') + '>&lt;=</option>' +
-                    '<option value="<"' + (cond.op === '<' ? ' selected' : '') + '>&lt;</option>' +
-                  '</select>' +
-                '</label>' +
-                '<label class="inline" style="margin-left:6px;">Threshold: ' +
-                  '<input type="number" class="inp condThreshold" value="' + esc(cond.threshold || 1) + '" />' +
-                '</label>';
+          '<select class="inp condOp">' +
+          '<option value=">="' + (cond.op === '>=' ? ' selected' : '') + '>&gt;=</option>' +
+          '<option value=">"' + (cond.op === '>' ? ' selected' : '') + '>&gt;</option>' +
+          '<option value="=="' + (cond.op === '==' ? ' selected' : '') + '>==</option>' +
+          '<option value="<="' + (cond.op === '<=' ? ' selected' : '') + '>&lt;=</option>' +
+          '<option value="<"' + (cond.op === '<' ? ' selected' : '') + '>&lt;</option>' +
+          '</select>' +
+          '</label>' +
+          '<label class="inline" style="margin-left:6px;">Threshold: ' +
+          '<input type="number" class="inp condThreshold" value="' + esc(cond.threshold || 1) + '" />' +
+          '</label>';
       } else {
         html += '<label class="inline" style="margin-left:6px;">Text contains: ' +
-                  '<input type="text" class="inp condTextContains" value="' + esc(cond.textContains || '') + '" />' +
-                '</label>';
+          '<input type="text" class="inp condTextContains" value="' + esc(cond.textContains || '') + '" />' +
+          '</label>';
       }
     } else if (type === 'derivedNumberComparison') {
       html += '<label class="inline">Derived key: ' +
-                '<select class="inp condDerivedKeySelect">' +
-                  derivedOptionsHtml(mod, cond.derivedKey) +
-                '</select>' +
-              '</label>' +
-              '<label class="inline" style="margin-left:6px;">Compare with (>=, >, ==, <=, <): ' +
-                '<select class="inp condOp">' +
-                  '<option value=">="' + (cond.op === '>=' ? ' selected' : '') + '>&gt;=</option>' +
-                  '<option value=">"' + (cond.op === '>' ? ' selected' : '') + '>&gt;</option>' +
-                  '<option value="=="' + (cond.op === '==' ? ' selected' : '') + '>==</option>' +
-                  '<option value="<="' + (cond.op === '<=' ? ' selected' : '') + '>&lt;=</option>' +
-                  '<option value="<"' + (cond.op === '<' ? ' selected' : '') + '>&lt;</option>' +
-                '</select>' +
-              '</label>' +
-              '<label class="inline" style="margin-left:6px;">Threshold: ' +
-                '<input type="number" class="inp condThreshold" value="' + esc(cond.threshold || 1) + '" />' +
-              '</label>';
+        '<select class="inp condDerivedKeySelect">' +
+        derivedOptionsHtml(mod, cond.derivedKey) +
+        '</select>' +
+        '</label>' +
+        '<label class="inline" style="margin-left:6px;">Compare with (>=, >, ==, <=, <): ' +
+        '<select class="inp condOp">' +
+        '<option value=">="' + (cond.op === '>=' ? ' selected' : '') + '>&gt;=</option>' +
+        '<option value=">"' + (cond.op === '>' ? ' selected' : '') + '>&gt;</option>' +
+        '<option value="=="' + (cond.op === '==' ? ' selected' : '') + '>==</option>' +
+        '<option value="<="' + (cond.op === '<=' ? ' selected' : '') + '>&lt;=</option>' +
+        '<option value="<"' + (cond.op === '<' ? ' selected' : '') + '>&lt;</option>' +
+        '</select>' +
+        '</label>' +
+        '<label class="inline" style="margin-left:6px;">Threshold: ' +
+        '<input type="number" class="inp condThreshold" value="' + esc(cond.threshold || 1) + '" />' +
+        '</label>';
     }
 
     return html;
@@ -374,22 +374,22 @@
       var join = String(node.join || 'and').toLowerCase();
       var html =
         '<div class="sbxA-card sbxA-condGroup" data-nid="' + esc(node.nid || '') + '">' +
-          '<div class="sbxA-row" style="justify-content:space-between; align-items:center;">' +
-            '<div>' +
-              '<select class="inp groupJoinType">' +
-                '<option value="and"' + (join !== 'or' ? ' selected' : '') + '>ALL must be true (AND)</option>' +
-                '<option value="or"' + (join === 'or' ? ' selected' : '') + '>ANY can be true (OR)</option>' +
-              '</select>' +
-            '</div>' +
-            '<div>' +
-              '<button class="btn btn-ghost" type="button" data-act="addCond">Add Condition</button>' +
-              '<button class="btn btn-ghost" type="button" data-act="addGroup">Add Group</button>' +
-              '<button class="btn btn-ghost" type="button" data-act="delNode">Delete</button>' +
-            '</div>' +
-          '</div>' +
-          '<div class="blockConditions" data-block-index="' + blockIndex + '">' +
-            renderCondArrayHTML(node.children, blockIndex, sbxData, mod) +
-          '</div>' +
+        '<div class="sbxA-row" style="justify-content:space-between; align-items:center;">' +
+        '<div>' +
+        '<select class="inp groupJoinType">' +
+        '<option value="and"' + (join !== 'or' ? ' selected' : '') + '>ALL must be true (AND)</option>' +
+        '<option value="or"' + (join === 'or' ? ' selected' : '') + '>ANY can be true (OR)</option>' +
+        '</select>' +
+        '</div>' +
+        '<div>' +
+        '<button class="btn btn-ghost" type="button" data-act="addCond">Add Condition</button>' +
+        '<button class="btn btn-ghost" type="button" data-act="addGroup">Add Group</button>' +
+        '<button class="btn btn-ghost" type="button" data-act="delNode">Delete</button>' +
+        '</div>' +
+        '</div>' +
+        '<div class="blockConditions" data-block-index="' + blockIndex + '">' +
+        renderCondArrayHTML(node.children, blockIndex, sbxData, mod) +
+        '</div>' +
         '</div>';
       return html;
     }
@@ -397,28 +397,28 @@
     var type = String(node.type || 'anyInList');
     var html2 =
       '<div class="sbxA-card sbxA-cond" data-nid="' + esc(node.nid || '') + '">' +
-        '<div class="sbxA-row wrap" style="justify-content:space-between; align-items:center;">' +
-          '<div>' +
-            '<label class="inline">Type: ' +
-              '<select class="inp condType">' +
-                '<option value="">-- choose --</option>' +
-                '<option value="anyInList"' + (type === 'anyInList' ? ' selected' : '') + '>Any in list (last user)</option>' +
-                '<option value="noneInList"' + (type === 'noneInList' ? ' selected' : '') + '>None in list (last user)</option>' +
-                '<option value="countInHistory"' + (type === 'countInHistory' ? ' selected' : '') + '>Count in history</option>' +
-                '<option value="messageCountComparison"' + (type === 'messageCountComparison' ? ' selected' : '') + '>Compare messageCount</option>' +
-                '<option value="memoryNumberComparison"' + (type === 'memoryNumberComparison' ? ' selected' : '') + '>Compare memory (number)</option>' +
-                '<option value="memoryStringContains"' + (type === 'memoryStringContains' ? ' selected' : '') + '>Memory string contains</option>' +
-                '<option value="derivedNumberComparison"' + (type === 'derivedNumberComparison' ? ' selected' : '') + '>Compare derived value (number)</option>' +
-              '</select>' +
-            '</label>' +
-          '</div>' +
-          '<div>' +
-            '<button class="btn btn-ghost" type="button" data-act="delNode">Delete</button>' +
-          '</div>' +
-        '</div>' +
-        '<div class="condDetails" style="margin-top:4px;">' +
-          renderCondDetailsHTML(node, sbxData, mod) +
-        '</div>' +
+      '<div class="sbxA-row wrap" style="justify-content:space-between; align-items:center;">' +
+      '<div>' +
+      '<label class="inline">Type: ' +
+      '<select class="inp condType">' +
+      '<option value="">-- choose --</option>' +
+      '<option value="anyInList"' + (type === 'anyInList' ? ' selected' : '') + '>Any in list (last user)</option>' +
+      '<option value="noneInList"' + (type === 'noneInList' ? ' selected' : '') + '>None in list (last user)</option>' +
+      '<option value="countInHistory"' + (type === 'countInHistory' ? ' selected' : '') + '>Count in history</option>' +
+      '<option value="messageCountComparison"' + (type === 'messageCountComparison' ? ' selected' : '') + '>Compare messageCount</option>' +
+      '<option value="memoryNumberComparison"' + (type === 'memoryNumberComparison' ? ' selected' : '') + '>Compare memory (number)</option>' +
+      '<option value="memoryStringContains"' + (type === 'memoryStringContains' ? ' selected' : '') + '>Memory string contains</option>' +
+      '<option value="derivedNumberComparison"' + (type === 'derivedNumberComparison' ? ' selected' : '') + '>Compare derived value (number)</option>' +
+      '</select>' +
+      '</label>' +
+      '</div>' +
+      '<div>' +
+      '<button class="btn btn-ghost" type="button" data-act="delNode">Delete</button>' +
+      '</div>' +
+      '</div>' +
+      '<div class="condDetails" style="margin-top:4px;">' +
+      renderCondDetailsHTML(node, sbxData, mod) +
+      '</div>' +
       '</div>';
 
     return html2;
@@ -475,15 +475,15 @@
 
     var html =
       '<div class="sbxA-page">' +
-        '<div class="sbxA-h2">Advanced: ' + esc(mod.label || moduleId) + '</div>' +
-        '<div class="sbxA-muted">Refine what the Basic module do...E IF / ELSE chains, lists, memory, and derived metrics.</div>' +
-        '<div class="sbxA-grid2" style="margin-top:12px;">' +
-          '<div>' +
-            '<div id="sbx-mod-lists"></div>' +
-            '<div id="sbx-mod-derived" style="margin-top:12px;"></div>' +
-          '</div>' +
-          '<div id="sbx-mod-blocks"></div>' +
-        '</div>' +
+      '<div class="sbxA-h2">Advanced: ' + esc(mod.label || moduleId) + '</div>' +
+      '<div class="sbxA-muted">Refine what the Basic module do...E IF / ELSE chains, lists, memory, and derived metrics.</div>' +
+      '<div class="sbxA-grid2" style="margin-top:12px;">' +
+      '<div>' +
+      '<div id="sbx-mod-lists"></div>' +
+      '<div id="sbx-mod-derived" style="margin-top:12px;"></div>' +
+      '</div>' +
+      '<div id="sbx-mod-blocks"></div>' +
+      '</div>' +
       '</div>';
 
     rootEl.innerHTML = html;
@@ -505,7 +505,7 @@
         '<div class="sbxA-h3">Lists</div>' +
         '<div class="sbxA-muted">Lists are shared across ALL Advanced modules. Each line is a keyword or phrase.</div>' +
         '<div class="sbxA-row" style="margin-top:10px;">' +
-          '<button class="btn btn-ghost" type="button" id="sbx-list-add">New List</button>' +
+        '<button class="btn btn-ghost" type="button" id="sbx-list-add">New List</button>' +
         '</div>' +
         '<div id="sbx-list-wrap" style="margin-top:10px; display:flex; flex-direction:column; gap:10px;"></div>';
 
@@ -521,14 +521,14 @@
         var items = isArr(L.items) ? L.items.join('\n') : '';
         cards +=
           '<div class="sbxA-card" style="padding:10px;" data-lidx="' + i + '">' +
-            '<div class="sbxA-row" style="justify-content:space-between;">' +
-              '<div style="flex:1; margin-right:6px;">' +
-                '<input class="inp" data-k="label" value="' + esc(L.label || ('List ' + (i + 1))) + '" />' +
-              '</div>' +
-              '<button class="btn btn-ghost" type="button" data-act="delList">Delete</button>' +
-            '</div>' +
-            '<div class="sbxA-muted" style="margin-top:6px;">One keyword or phrase per line.</div>' +
-            '<textarea class="inp sbxA-ta sbxA-mono" data-k="items" style="margin-top:6px;">' + esc(items) + '</textarea>' +
+          '<div class="sbxA-row" style="justify-content:space-between;">' +
+          '<div style="flex:1; margin-right:6px;">' +
+          '<input class="inp" data-k="label" value="' + esc(L.label || ('List ' + (i + 1))) + '" />' +
+          '</div>' +
+          '<button class="btn btn-ghost" type="button" data-act="delList">Delete</button>' +
+          '</div>' +
+          '<div class="sbxA-muted" style="margin-top:6px;">One keyword or phrase per line.</div>' +
+          '<textarea class="inp sbxA-ta sbxA-mono" data-k="items" style="margin-top:6px;">' + esc(items) + '</textarea>' +
           '</div>';
       }
 
@@ -610,7 +610,7 @@
         '<div class="sbxA-h3">Derived values</div>' +
         '<div class="sbxA-muted">Computed counts over normalized history. Referenced by derivedNumberComparison conditions.</div>' +
         '<div class="sbxA-row" style="margin-top:10px;">' +
-          '<button class="btn btn-ghost" type="button" id="sbx-derived-add">Add Derived Value</button>' +
+        '<button class="btn btn-ghost" type="button" id="sbx-derived-add">Add Derived Value</button>' +
         '</div>' +
         '<div id="sbx-derived-wrap" style="margin-top:10px; display:flex; flex-direction:column; gap:10px;"></div>';
 
@@ -625,25 +625,25 @@
         var d = dArr[iD] || {};
         cardsD +=
           '<div class="sbxA-card" style="padding:8px;" data-didx="' + iD + '">' +
-            '<div class="sbxA-row wrap" style="align-items:center;">' +
-              '<label class="inline">Key: ' +
-                '<input type="text" class="inp derivedKeyInput" value="' + esc(d.key || '') + '" placeholder="e.g. affectionCount" />' +
-              '</label>' +
-              '<label class="inline" style="margin-left:6px;">Description: ' +
-                '<input type="text" class="inp derivedDescInput" value="' + esc(d.description || '') + '" placeholder="optional" />' +
-              '</label>' +
-            '</div>' +
-            '<div class="sbxA-row wrap" style="margin-top:6px; align-items:center;">' +
-              '<label class="inline">List: ' +
-                '<select class="inp derivedListSelect">' +
-                  listOptionsHtml(sbxData, d.listId) +
-                '</select>' +
-              '</label>' +
-              '<label class="inline" style="margin-left:6px;">Last N messages: ' +
-                '<input type="number" class="inp derivedWindowInput" value="' + esc(d.windowSize || 10) + '" />' +
-              '</label>' +
-              '<button class="btn btn-ghost inline" type="button" data-act="delDerived" style="margin-left:auto;">Delete</button>' +
-            '</div>' +
+          '<div class="sbxA-row wrap" style="align-items:center;">' +
+          '<label class="inline">Key: ' +
+          '<input type="text" class="inp derivedKeyInput" value="' + esc(d.key || '') + '" placeholder="e.g. affectionCount" />' +
+          '</label>' +
+          '<label class="inline" style="margin-left:6px;">Description: ' +
+          '<input type="text" class="inp derivedDescInput" value="' + esc(d.description || '') + '" placeholder="optional" />' +
+          '</label>' +
+          '</div>' +
+          '<div class="sbxA-row wrap" style="margin-top:6px; align-items:center;">' +
+          '<label class="inline">List: ' +
+          '<select class="inp derivedListSelect">' +
+          listOptionsHtml(sbxData, d.listId) +
+          '</select>' +
+          '</label>' +
+          '<label class="inline" style="margin-left:6px;">Last N messages: ' +
+          '<input type="number" class="inp derivedWindowInput" value="' + esc(d.windowSize || 10) + '" />' +
+          '</label>' +
+          '<button class="btn btn-ghost inline" type="button" data-act="delDerived" style="margin-left:auto;">Delete</button>' +
+          '</div>' +
           '</div>';
       }
 
@@ -740,8 +740,8 @@
         '<div class="sbxA-h3">Rules</div>' +
         '<div class="sbxA-muted">Each IF / ELSE IF / ELSE chain ... memory, and derived metrics to build complex triggers.</div>' +
         '<div class="sbxA-row" style="margin-top:10px;">' +
-          '<button class="btn btn-ghost" type="button" id="sbx-rule-add">New IF Chain</button>' +
-          '<button class="btn btn-ghost" type="button" id="sbx-import-basic">Import from Basic</button>' +
+        '<button class="btn btn-ghost" type="button" id="sbx-rule-add">New IF Chain</button>' +
+        '<button class="btn btn-ghost" type="button" id="sbx-import-basic">Import from Basic</button>' +
         '</div>' +
         '<div id="sbx-rule-wrap" style="margin-top:10px; display:flex; flex-direction:column; gap:10px;"></div>';
 
@@ -756,13 +756,13 @@
         var ch = chains[c];
         cards += '<div class="sbxA-card" style="padding:10px;" data-cidx="' + c + '">';
         cards += '<div class="sbxA-row" style="justify-content:space-between;">' +
-                   '<div style="font-weight:900;">Rule ' + (c + 1) + '</div>' +
-                   '<div>' +
-                     '<button class="btn btn-ghost" type="button" data-act="moveChainUp">Move Up</button>' +
-                     '<button class="btn btn-ghost" type="button" data-act="moveChainDown">Move Down</button>' +
-                     '<button class="btn btn-ghost" type="button" data-act="delChain">Delete</button>' +
-                   '</div>' +
-                 '</div>';
+          '<div style="font-weight:900;">Rule ' + (c + 1) + '</div>' +
+          '<div>' +
+          '<button class="btn btn-ghost" type="button" data-act="moveChainUp">Move Up</button>' +
+          '<button class="btn btn-ghost" type="button" data-act="moveChainDown">Move Down</button>' +
+          '<button class="btn btn-ghost" type="button" data-act="delChain">Delete</button>' +
+          '</div>' +
+          '</div>';
         cards += '<div style="margin-top:8px;">';
 
         var bi;
@@ -779,38 +779,38 @@
           var join = String(b.join || 'and').toLowerCase();
 
           cards += '<div class="sbxA-card" style="margin-top:6px; padding:8px;" data-bidx="' + bi + '">' +
-                     '<div class="sbxA-row" style="font-size:11px; margin-bottom:4px; align-items:center;">' +
-                       '<div style="font-weight:900;">' + label + '</div>' +
-                       '<input type="text" class="inp blockLabelInput" style="margin-left:6px; min-width:120px;" ' +
-                         'value="' + esc(b.label || '') + '" placeholder="Block label (optional)" />' +
-                     '</div>';
+            '<div class="sbxA-row" style="font-size:11px; margin-bottom:4px; align-items:center;">' +
+            '<div style="font-weight:900;">' + label + '</div>' +
+            '<input type="text" class="inp blockLabelInput" style="margin-left:6px; min-width:120px;" ' +
+            'value="' + esc(b.label || '') + '" placeholder="Block label (optional)" />' +
+            '</div>';
 
           // CONDITIONS
           if (t !== 'else') {
             cards += '<div class="sbxA-row wrap" style="margin-bottom:4px;">' +
-                       '<label class="inline">Combine conditions with: ' +
-                         '<select class="inp blockJoinType">' +
-                           '<option value="and"' + (join !== 'or' ? ' selected' : '') + '>ALL must be true (AND)</option>' +
-                           '<option value="or"' + (join === 'or' ? ' selected' : '') + '>ANY can be true (OR)</option>' +
-                         '</select>' +
-                       '</label>' +
-                     '</div>';
+              '<label class="inline">Combine conditions with: ' +
+              '<select class="inp blockJoinType">' +
+              '<option value="and"' + (join !== 'or' ? ' selected' : '') + '>ALL must be true (AND)</option>' +
+              '<option value="or"' + (join === 'or' ? ' selected' : '') + '>ANY can be true (OR)</option>' +
+              '</select>' +
+              '</label>' +
+              '</div>';
           }
 
           cards += '<div class="blockConditions">' +
-                     renderCondArrayHTML(b.conditions, bi, sbxData, mod) +
-                   '</div>';
+            renderCondArrayHTML(b.conditions, bi, sbxData, mod) +
+            '</div>';
 
           if (t !== 'else') {
             cards += '<div class="sbxA-row" style="margin-top:6px;">' +
-                       '<button class="btn btn-ghost" type="button" data-act="addCondRoot">Add Condition</button>' +
-                       '<button class="btn btn-ghost" type="button" data-act="addGroupRoot">Add Group</button>' +
-                     '</div>';
+              '<button class="btn btn-ghost" type="button" data-act="addCondRoot">Add Condition</button>' +
+              '<button class="btn btn-ghost" type="button" data-act="addGroupRoot">Add Group</button>' +
+              '</div>';
           }
 
           // ACTIONS (multiple)
           cards += '<div class="sbxA-h4" style="margin-top:8px;">Actions</div>' +
-                   '<div class="blockActions">';
+            '<div class="blockActions">';
 
           var ai;
           for (ai = 0; ai < b.actions.length; ai++) {
@@ -818,40 +818,40 @@
             var showMem = (act.target === 'memoryNumeric' || act.target === 'memoryString');
 
             cards += '<div class="sbxA-card sbxA-action" style="margin-top:4px; padding:6px;" data-aidx="' + ai + '">' +
-                       '<div class="sbxA-row wrap" style="align-items:center;">' +
-                         '<label class="inline">Target: ' +
-                           '<select class="inp actionTarget">' +
-                             '<option value="context.character.personality"' + (act.target === 'context.character.personality' ? ' selected' : '') + '>Personality</option>' +
-                             '<option value="context.character.scenario"' + (act.target === 'context.character.scenario' ? ' selected' : '') + '>Scenario</option>' +
-                             '<option value="context.character.example_dialogs"' + (act.target === 'context.character.example_dialogs' ? ' selected' : '') + '>Example dialogs</option>' +
-                             '<option value="memoryNumeric"' + (act.target === 'memoryNumeric' ? ' selected' : '') + '>memory numeric (context.character.memory[KEY])</option>' +
-                             '<option value="memoryString"' + (act.target === 'memoryString' ? ' selected' : '') + '>memory string (context.character.memory[KEY])</option>' +
-                           '</select>' +
-                         '</label>' +
-                         '<label class="inline" style="margin-left:6px;">Mode: ' +
-                           '<select class="inp actionMode">' +
-                             '<option value="append"' + (act.mode === 'append' ? ' selected' : '') + '>append</option>' +
-                             '<option value="set"' + (act.mode === 'set' ? ' selected' : '') + '>set</option>' +
-                             '<option value="add"' + (act.mode === 'add' ? ' selected' : '') + '>add (numbers only)</option>' +
-                             '<option value="subtract"' + (act.mode === 'subtract' ? ' selected' : '') + '>subtract (numbers only)</option>' +
-                           '</select>' +
-                         '</label>' +
-                         '<label class="inline memoryKeyLabel" style="margin-left:6px; display:' + (showMem ? 'inline-block' : 'none') + ';">Key: ' +
-                           '<input type="text" class="inp memoryKeyInput" value="' + esc(act.memKey || '') + '" placeholder="e.g. affection" />' +
-                         '</label>' +
-                       '</div>' +
-                       '<div class="sbxA-row wrap" style="margin-top:4px;">' +
-                         '<label class="inline">Action label: ' +
-                           '<input type="text" class="inp actionLabel" value="' + esc(act.label || '') + '" placeholder="optional label" />' +
-                         '</label>' +
-                       '</div>' +
-                       '<textarea class="inp sbxA-ta sbxA-mono actionText" style="margin-top:4px;" rows="3" placeholder="Action text (what to append / set / write)">' + esc(act.text || '') + '</textarea>' +
-                       '<div class="sbxA-row" style="margin-top:4px; justify-content:flex-end;">' +
-                         '<button class="btn btn-ghost" type="button" data-act="moveActionUp">Move Up</button>' +
-                         '<button class="btn btn-ghost" type="button" data-act="moveActionDown">Move Down</button>' +
-                         '<button class="btn btn-ghost" type="button" data-act="delAction">Delete</button>' +
-                       '</div>' +
-                     '</div>';
+              '<div class="sbxA-row wrap" style="align-items:center;">' +
+              '<label class="inline">Target: ' +
+              '<select class="inp actionTarget">' +
+              '<option value="context.character.personality"' + (act.target === 'context.character.personality' ? ' selected' : '') + '>Personality</option>' +
+              '<option value="context.character.scenario"' + (act.target === 'context.character.scenario' ? ' selected' : '') + '>Scenario</option>' +
+              '<option value="context.character.example_dialogs"' + (act.target === 'context.character.example_dialogs' ? ' selected' : '') + '>Example dialogs</option>' +
+              '<option value="memoryNumeric"' + (act.target === 'memoryNumeric' ? ' selected' : '') + '>memory numeric (context.character.memory[KEY])</option>' +
+              '<option value="memoryString"' + (act.target === 'memoryString' ? ' selected' : '') + '>memory string (context.character.memory[KEY])</option>' +
+              '</select>' +
+              '</label>' +
+              '<label class="inline" style="margin-left:6px;">Mode: ' +
+              '<select class="inp actionMode">' +
+              '<option value="append"' + (act.mode === 'append' ? ' selected' : '') + '>append</option>' +
+              '<option value="set"' + (act.mode === 'set' ? ' selected' : '') + '>set</option>' +
+              '<option value="add"' + (act.mode === 'add' ? ' selected' : '') + '>add (numbers only)</option>' +
+              '<option value="subtract"' + (act.mode === 'subtract' ? ' selected' : '') + '>subtract (numbers only)</option>' +
+              '</select>' +
+              '</label>' +
+              '<label class="inline memoryKeyLabel" style="margin-left:6px; display:' + (showMem ? 'inline-block' : 'none') + ';">Key: ' +
+              '<input type="text" class="inp memoryKeyInput" value="' + esc(act.memKey || '') + '" placeholder="e.g. affection" />' +
+              '</label>' +
+              '</div>' +
+              '<div class="sbxA-row wrap" style="margin-top:4px;">' +
+              '<label class="inline">Action label: ' +
+              '<input type="text" class="inp actionLabel" value="' + esc(act.label || '') + '" placeholder="optional label" />' +
+              '</label>' +
+              '</div>' +
+              '<textarea class="inp sbxA-ta sbxA-mono actionText" style="margin-top:4px;" rows="3" placeholder="Action text (what to append / set / write)">' + esc(act.text || '') + '</textarea>' +
+              '<div class="sbxA-row" style="margin-top:4px; justify-content:flex-end;">' +
+              '<button class="btn btn-ghost" type="button" data-act="moveActionUp">Move Up</button>' +
+              '<button class="btn btn-ghost" type="button" data-act="moveActionDown">Move Down</button>' +
+              '<button class="btn btn-ghost" type="button" data-act="delAction">Delete</button>' +
+              '</div>' +
+              '</div>';
           }
 
           cards += '</div>';
@@ -883,16 +883,27 @@
       var importBtn = $('#sbx-import-basic');
       if (importBtn) {
         importBtn.onclick = function () {
+          console.error("SBX Module: Import from Basic clicked");
           try {
             var studioState = getStudioState();
-            if (SBX.Import && typeof SBX.Import.fromBasicModule === 'function') {
+            var hasFn = (SBX.Import && typeof SBX.Import.fromBasicModule === 'function');
+            console.error("SBX Module: Import function exists?", hasFn, "ModuleId:", moduleId);
+
+            if (hasFn) {
               SBX.Import.fromBasicModule(studioState, sbxData, moduleId);
               persist();
               renderLists();
               renderDerived();
               renderBlocks();
+              console.error("SBX Module: Import completed successfully");
+            } else {
+              console.error("SBX Module: SBX.Import.fromBasicModule is MISSING");
+              // Fallback check
+              if (window.SBX && window.SBX.Import) console.error("SBX.Import keys:", Object.keys(window.SBX.Import));
             }
-          } catch (e) {}
+          } catch (e) {
+            console.error("SBX Module: Import failed with error:", e);
+          }
         };
       }
 

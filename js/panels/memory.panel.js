@@ -258,57 +258,8 @@
     s += '  entries: ' + emitEntries(cfg) + '\n';
     s += '};\n\n';
 
-    s += 'function mem_trim(s){ return String(s==null?\"\":s).replace(/^\\s+|\\s+$/g,\"\"); }\n\n';
-
-    s += 'function mem_escRegex(s){\n';
-    s += '  return String(s).replace(/[\\\\^$.*+?()[\\]{}|]/g, \"\\\\$&\");\n';
-    s += '}\n\n';
-
-    s += 'function mem_parseKeywords(raw){\n';
-    s += '  var s = String(raw||\"\");\n';
-    s += '  s = s.replace(/\\r/g, \"\");\n';
-    s += '  s = s.replace(/\\n/g, \",\");\n';
-    s += '  var parts = s.split(\",\");\n';
-    s += '  var out = [];\n';
-    s += '  var seen = {};\n';
-    s += '  for (var i=0;i<parts.length;i++){\n';
-    s += '    var t = mem_trim(parts[i]);\n';
-    s += '    if (!t) continue;\n';
-    s += '    var key = t.toLowerCase();\n';
-    s += '    if (!seen[key]){ out.push(t); seen[key]=true; }\n';
-    s += '  }\n';
-    s += '  return out;\n';
-    s += '}\n\n';
-
-    s += 'function mem_buildRegex(tokens, wholeWord){\n';
-    s += '  if (!tokens || !tokens.length) return null;\n';
-    s += '  var parts = [];\n';
-    s += '  for (var i=0;i<tokens.length;i++){\n';
-    s += '    var t = mem_escRegex(tokens[i]);\n';
-    s += '    t = t.replace(/\\s+/g, \"\\\\s+\");\n';
-    s += '    if (wholeWord) t = \"\\\\b\" + t + \"\\\\b\";\n';
-    s += '    parts.push(t);\n';
-    s += '  }\n';
-    s += '  var body = \"(?:\" + parts.join(\"|\") + \")\";\n';
-    s += '  var flags = MEM_CFG.caseSensitive ? \"\" : \"i\";\n';
-    s += '  try { return new RegExp(body, flags); } catch(_e){ return null; }\n';
-    s += '}\n\n';
-
-    s += 'function mem_hasMarker(hay, id){\n';
-    s += '  return hay && hay.indexOf(\"[MEM:\" + id + \"]\") !== -1;\n';
-    s += '}\n\n';
-
-    s += 'function mem_append(context, target, id, text){\n';
-    s += '  if (!text) return;\n';
-    s += '  if (!context || !context.character) return;\n';
-    s += '  var field = (target === \"scenario\") ? \"scenario\" : \"personality\";\n';
-    s += '  if (typeof context.character[field] !== \"string\") context.character[field] = \"\";\n';
-    s += '  if (MEM_CFG.oneTime && mem_hasMarker(context.character[field], id)) return;\n';
-    s += '  context.character[field] += \"\\n\\n[MEM:\" + id + \"]\\n\" + text;\n';
-    s += '}\n\n';
-
     s += '(function(){\n';
-    s += '  if (!MEM_CFG || !MEM_CFG.enabled) return;\n';
+    s += '  if (!MEM_CFG.enabled) return;\n';
     s += '  if (typeof context === \"undefined\" || !context || !context.chat) return;\n';
     s += '  var msg = context.chat.last_message;\n';
     s += '  if (msg == null) msg = \"\";\n';
@@ -319,12 +270,13 @@
     s += '  for (var i=0;i<entries.length;i++){\n';
     s += '    var e = entries[i];\n';
     s += '    if (!e || !e.enabled) continue;\n';
-    s += '    var tokens = mem_parseKeywords(e.keywords);\n';
+    s += '    var tokens = SBX_R.parseKeywords(e.keywords);\n';
     s += '    if (!tokens.length) continue;\n';
-    s += '    var re = mem_buildRegex(tokens, MEM_CFG.wholeWord);\n';
+    s += '    var re = SBX_R.buildRegex(tokens, MEM_CFG.wholeWord, MEM_CFG.caseSensitive);\n';
     s += '    if (!re) continue;\n';
     s += '    if (re.test(msg)) {\n';
-    s += '      mem_append(context, e.target, e.id, e.memoryText);\n';
+    s += '      var target = (e.target === \"scenario\") ? \"character.scenario\" : \"character.personality\";\n';
+    s += '      SBX_R.append(context, target, e.memoryText, \"[MEM:\" + e.id + \"]\", MEM_CFG.oneTime);\n';
     s += '    }\n';
     s += '  }\n';
     s += '})();\n';

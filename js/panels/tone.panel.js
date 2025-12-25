@@ -545,33 +545,6 @@
     return '' +
       "(function(){\n" +
       "  'use strict';\n" +
-      "  function norm(s){\n" +
-      "    if(s==null) return '';\n" +
-      "    s = String(s).toLowerCase();\n" +
-      "    s = s.replace(/\\s+/g,' ');\n" +
-      "    s = s.replace(/^\\s+|\\s+$/g,'');\n" +
-      "    return s;\n" +
-      "  }\n" +
-      "  function escRe(s){ return String(s).replace(/[.*+?^${}()|[\\]\\\\]/g,'\\\\$&'); }\n" +
-      "  function get(obj, path){\n" +
-      "    var parts = String(path||'').split('.');\n" +
-      "    var cur = obj;\n" +
-      "    for(var i=0;i<parts.length;i++){\n" +
-      "      if(!cur || typeof cur!=='object') return undefined;\n" +
-      "      cur = cur[parts[i]];\n" +
-      "    }\n" +
-      "    return cur;\n" +
-      "  }\n" +
-      "  function set(obj, path, val){\n" +
-      "    var parts = String(path||'').split('.');\n" +
-      "    var cur = obj;\n" +
-      "    for(var i=0;i<parts.length-1;i++){\n" +
-      "      var k = parts[i];\n" +
-      "      if(!cur[k] || typeof cur[k] !== 'object') cur[k] = {};\n" +
-      "      cur = cur[k];\n" +
-      "    }\n" +
-      "    cur[parts[parts.length-1]] = val;\n" +
-      "  }\n" +
       "  function hasNegation(beforeTokens, win){\n" +
       "    var neg = { 'not':1,'no':1,'never':1,'isnt':1,'dont':1,'cant':1,'wont':1,'aint':1 };\n" +
       "    var n = beforeTokens.length;\n" +
@@ -586,9 +559,9 @@
       "\n" +
       "  var rules = " + json + ";\n" +
       "  if(!rules || !rules.length) return;\n" +
+      "  if(!context || !context.chat) return;\n" +
       "\n" +
-      "  var msg = (typeof context!=='undefined' && context && context.chat) ? context.chat.last_message : '';\n" +
-      "  var s = norm(msg);\n" +
+      "  var s = SBX_R.norm(context.chat.last_message);\n" +
       "  if(!s) return;\n" +
       "\n" +
       "  for(var ri=0;ri<rules.length;ri++){\n" +
@@ -596,15 +569,15 @@
       "    if(!r || !r.keywords || !r.keywords.length) continue;\n" +
       "    if(!r.text) continue;\n" +
       "\n" +
-      "    var cur = get(context, r.target) || '';\n" +
-      "    cur = String(cur);\n" +
+      "    var path = String(r.target).replace(/^context\\./,'');\n" +
+      "    var cur = String(SBX_R.get(context, path) || '');\n" +
       "    if(r.marker && cur.indexOf(r.marker) !== -1) continue;\n" +
       "\n" +
       "    var matched = false;\n" +
       "    for(var ki=0;ki<r.keywords.length;ki++){\n" +
-      "      var kw = norm(r.keywords[ki]);\n" +
+      "      var kw = SBX_R.norm(r.keywords[ki]);\n" +
       "      if(!kw) continue;\n" +
-      "      var pat = escRe(kw);\n" +
+      "      var pat = SBX_R.escRegex(kw);\n" +
       "      if(r.allowSuffixes && /^[a-z]+$/.test(kw) && kw.length>=3 && kw.indexOf('ing', kw.length-3) === -1){\n" +
       "        pat = pat + '(?:ing)?';\n" +
       "      }\n" +
@@ -623,15 +596,7 @@
       "      }\n" +
       "    }\n" +
       "\n" +
-      "    if(!matched) continue;\n" +
-      "\n" +
-      "    var add = '';\n" +
-      "    if(r.marker) add += r.marker + '\\n';\n" +
-      "    add += r.text + '\\n';\n" +
-      "    var next = cur;\n" +
-      "    if(next && next.length && next.charAt(next.length-1) !== '\\n') next += '\\n';\n" +
-      "    next += add;\n" +
-      "    set(context, r.target, next);\n" +
+      "    if(matched) SBX_R.append(context, path, r.text, r.marker, false);\n" +
       "  }\n" +
       "})();\n";
   }

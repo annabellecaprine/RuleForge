@@ -42,7 +42,7 @@
     } catch (_e) { return fallback; }
   }
   function lsSet(key, val) {
-    try { root.localStorage.setItem(key, val); } catch (_e) {}
+    try { root.localStorage.setItem(key, val); } catch (_e) { }
   }
 
   function safeDispatch(name, detail) {
@@ -52,12 +52,12 @@
         root.dispatchEvent(new CustomEvent(name, { detail: detail }));
         return;
       }
-    } catch (_e0) {}
+    } catch (_e0) { }
     try {
       var ev = document.createEvent('CustomEvent');
       ev.initCustomEvent(name, false, false, detail);
       root.dispatchEvent(ev);
-    } catch (_e1) {}
+    } catch (_e1) { }
   }
 
   // ---------------------------
@@ -164,7 +164,7 @@
       try {
         var lst = SBX.modules.list();
         return isArr(lst) ? lst : [];
-      } catch (_e0) {}
+      } catch (_e0) { }
     }
     if (SBX.moduleRegistry && isArr(SBX.moduleRegistry)) return SBX.moduleRegistry;
     return [];
@@ -172,7 +172,7 @@
 
   function getStudioState() {
     if (SBX.store && typeof SBX.store.ensureStudioState === 'function') {
-      try { return SBX.store.ensureStudioState(); } catch (_e1) {}
+      try { return SBX.store.ensureStudioState(); } catch (_e1) { }
     }
     root.StudioState = root.StudioState || {};
     root.StudioState.data = root.StudioState.data || {};
@@ -210,11 +210,12 @@
   // Compile / Package
   // ---------------------------
   function tryBuildPackage(studioState, buildOrder) {
-    if (!root.EngineRuntime || typeof root.EngineRuntime.buildPackage !== 'function') {
-      return { ok: false, error: 'EngineRuntime.buildPackage is not available.', pkg: null };
+    var runtime = root.DataShaper || root.EngineRuntime;
+    if (!runtime || typeof runtime.buildPackage !== 'function') {
+      return { ok: false, error: 'EngineRuntime/DataShaper.buildPackage is not available.', pkg: null };
     }
     try {
-      var pkg = root.EngineRuntime.buildPackage(studioState, { buildOrder: buildOrder });
+      var pkg = runtime.buildPackage(studioState, { buildOrder: buildOrder });
       return { ok: true, error: null, pkg: pkg };
     } catch (e) {
       return { ok: false, error: String(e && e.message ? e.message : e), pkg: null };
@@ -261,52 +262,52 @@
     // STRICT 2-column layout: left module org, right compile/output
     rootEl.innerHTML =
       '<div class="sbxEng">' +
-        '<div class="sbxA-h2">Engine</div>' +
-        '<div class="sbxA-sub">Left: module organization. Right: compile and final output.</div>' +
+      '<div class="sbxA-h2">Engine</div>' +
+      '<div class="sbxA-sub">Left: module organization. Right: compile and final output.</div>' +
 
-        '<div class="sbxEng-grid" style="margin-top:12px;">' +
+      '<div class="sbxEng-grid" style="margin-top:12px;">' +
 
-          // LEFT
-          '<div class="sbxEng-left">' +
-            '<div class="sbxA-card">' +
-              '<div class="sbxA-h3">Module Organization</div>' +
-              '<div class="sbxA-muted">Select a module, then move/toggle/open.</div>' +
-              '<div id="sbx-eng-mods" class="sbxEng-modList"></div>' +
-              '<div class="sbxEng-actions">' +
-                '<button class="btn btn-ghost" type="button" id="sbx-eng-up">Move Up</button>' +
-                '<button class="btn btn-ghost" type="button" id="sbx-eng-down">Move Down</button>' +
-                '<button class="btn btn-ghost" type="button" id="sbx-eng-toggle">Toggle Module Power</button>' +
-                '<button class="btn btn-ghost" type="button" id="sbx-eng-open">Open Module Tab</button>' +
-              '</div>' +
-            '</div>' +
-          '</div>' +
+      // LEFT
+      '<div class="sbxEng-left">' +
+      '<div class="sbxA-card">' +
+      '<div class="sbxA-h3">Module Organization</div>' +
+      '<div class="sbxA-muted">Select a module, then move/toggle/open.</div>' +
+      '<div id="sbx-eng-mods" class="sbxEng-modList"></div>' +
+      '<div class="sbxEng-actions">' +
+      '<button class="btn btn-ghost" type="button" id="sbx-eng-up">Move Up</button>' +
+      '<button class="btn btn-ghost" type="button" id="sbx-eng-down">Move Down</button>' +
+      '<button class="btn btn-ghost" type="button" id="sbx-eng-toggle">Toggle Module Power</button>' +
+      '<button class="btn btn-ghost" type="button" id="sbx-eng-open">Open Module Tab</button>' +
+      '</div>' +
+      '</div>' +
+      '</div>' +
 
-          // RIGHT
-          '<div class="sbxEng-right">' +
-            '<div class="sbxA-card">' +
-              '<div class="sbxA-h3">Compile & Output</div>' +
-              '<div class="sbxA-muted">Compiled script from all enabled modules, in order.</div>' +
-              '<div class="sbxA-row" style="margin-top:10px;">' +
-                '<button class="btn btn-primary" type="button" id="sbx-eng-compile">Compile All</button>' +
-                '<button class="btn btn-ghost" type="button" id="sbx-eng-copy">Copy Final</button>' +
-                '<button class="btn btn-ghost" type="button" id="sbx-eng-toggle-debug">' + (ui.debugOpen ? 'Hide' : 'Show') + ' Debug</button>' +
-              '</div>' +
-              '<div id="sbx-eng-status" class="sbxA-muted" style="margin-top:6px;"></div>' +
-              '<textarea class="inp sbxA-ta sbxA-mono sbxEng-out" id="sbx-eng-output" rows="18" readonly></textarea>' +
-            '</div>' +
+      // RIGHT
+      '<div class="sbxEng-right">' +
+      '<div class="sbxA-card">' +
+      '<div class="sbxA-h3">Compile & Output</div>' +
+      '<div class="sbxA-muted">Compiled script from all enabled modules, in order.</div>' +
+      '<div class="sbxA-row" style="margin-top:10px;">' +
+      '<button class="btn btn-primary" type="button" id="sbx-eng-compile">Compile All</button>' +
+      '<button class="btn btn-ghost" type="button" id="sbx-eng-copy">Copy Final</button>' +
+      '<button class="btn btn-ghost" type="button" id="sbx-eng-toggle-debug">' + (ui.debugOpen ? 'Hide' : 'Show') + ' Debug</button>' +
+      '</div>' +
+      '<div id="sbx-eng-status" class="sbxA-muted" style="margin-top:6px;"></div>' +
+      '<textarea class="inp sbxA-ta sbxA-mono sbxEng-out" id="sbx-eng-output" rows="18" readonly></textarea>' +
+      '</div>' +
 
-            '<div class="sbxA-card" id="sbx-eng-debug" style="display:' + (ui.debugOpen ? 'block' : 'none') + '; margin-top:12px;">' +
-              '<div class="sbxA-row" style="justify-content:space-between;">' +
-                '<div class="sbxA-h3" style="margin:0;">Debug</div>' +
-                '<button class="btn btn-ghost" type="button" id="sbx-eng-toggle-pkg">' + (ui.pkgOpen ? 'Collapse' : 'Expand') + ' Package JSON</button>' +
-              '</div>' +
-              '<div id="sbx-eng-pkg-wrap" style="display:' + (ui.pkgOpen ? 'block' : 'none') + '">' +
-                '<textarea class="inp sbxA-ta sbxA-mono sbxEng-out" id="sbx-eng-pkg" rows="12" readonly></textarea>' +
-              '</div>' +
-            '</div>' +
-          '</div>' +
+      '<div class="sbxA-card" id="sbx-eng-debug" style="display:' + (ui.debugOpen ? 'block' : 'none') + '; margin-top:12px;">' +
+      '<div class="sbxA-row" style="justify-content:space-between;">' +
+      '<div class="sbxA-h3" style="margin:0;">Debug</div>' +
+      '<button class="btn btn-ghost" type="button" id="sbx-eng-toggle-pkg">' + (ui.pkgOpen ? 'Collapse' : 'Expand') + ' Package JSON</button>' +
+      '</div>' +
+      '<div id="sbx-eng-pkg-wrap" style="display:' + (ui.pkgOpen ? 'block' : 'none') + '">' +
+      '<textarea class="inp sbxA-ta sbxA-mono sbxEng-out" id="sbx-eng-pkg" rows="12" readonly></textarea>' +
+      '</div>' +
+      '</div>' +
+      '</div>' +
 
-        '</div>' +
+      '</div>' +
       '</div>';
 
     function setStatus(msg) {
@@ -332,11 +333,11 @@
 
         html +=
           '<button type="button" class="side-tab' +
-            (isActive ? ' active' : '') +
-            (on ? '' : ' is-off') +
+          (isActive ? ' active' : '') +
+          (on ? '' : ' is-off') +
           '" data-mid="' + esc(id) + '">' +
-            '<span>' + esc((j + 1) + ') ' + moduleLabel(mods, id)) + '</span>' +
-            '<span class="side-dot ' + (on ? 'on' : 'off') + '"></span>' +
+          '<span>' + esc((j + 1) + ') ' + moduleLabel(mods, id)) + '</span>' +
+          '<span class="side-dot ' + (on ? 'on' : 'off') + '"></span>' +
           '</button>';
       }
 
@@ -379,7 +380,7 @@
       var on = getModuleEnabled(studioState, id);
       setModuleEnabled(studioState, id, !on);
 
-      try { if (SBX.store && typeof SBX.store.save === 'function') SBX.store.save(studioState); } catch (_e0) {}
+      try { if (SBX.store && typeof SBX.store.save === 'function') SBX.store.save(studioState); } catch (_e0) { }
 
       renderModuleButtons();
       safeDispatch('SBX:modulesChanged', { moduleId: id, enabled: !on });
@@ -404,36 +405,43 @@
       var code = '';
       var pkg = null;
 
-      // ✅ Preferred path: final JS via EngineRuntime.buildAdvancedScript
-      if (root.EngineRuntime && typeof root.EngineRuntime.buildAdvancedScript === 'function') {
+      // ✅ Preferred path: DataShaper (Build + Render)
+      var runtime = root.DataShaper || root.EngineRuntime;
+
+      // 1. Build the Package (IR)
+      if (runtime && typeof runtime.buildPackage === 'function') {
         try {
-          code = String(
-            root.EngineRuntime.buildAdvancedScript(studioState, { buildOrder: order }) || ''
-          );
+          pkg = runtime.buildPackage(studioState, { buildOrder: order });
         } catch (e) {
-          setStatus('Compile failed: ' + String(e && e.message ? e.message : e));
+          setStatus('Build failed: ' + String(e && e.message ? e.message : e));
           if (pkgTa) pkgTa.value = '';
           return;
+        }
+      }
+
+      // 2. Render the Code (JS)
+      if (pkg && runtime) {
+        if (typeof runtime.renderPackageCode === 'function') {
+          // Modern DataShaper path
+          try {
+            code = runtime.renderPackageCode(pkg);
+          } catch (e) {
+            console.error("Render failed", e);
+            code = "// Render failed: " + e;
+          }
+        } else if (typeof runtime.buildAdvancedScript === 'function') {
+          // Legacy EngineRuntime path (re-runs build implies double work but safe fallback)
+          try {
+            code = runtime.buildAdvancedScript(studioState, { buildOrder: order });
+          } catch (e) { }
         }
 
-        // For the debug panel, also try to build the JSON package
-        if (pkgTa && typeof root.EngineRuntime.buildPackage === 'function') {
-          try {
-            pkg = root.EngineRuntime.buildPackage(studioState, { buildOrder: order });
-          } catch (_e2) {
-            pkg = null;
-          }
-        }
+        // Final fallback if no code generated yet
+        if (!code) code = extractCompiledText(pkg);
       } else {
-        // 🔙 Fallback: existing JSON-based behavior
-        var res = tryBuildPackage(studioState, order);
-        if (!res.ok) {
-          setStatus('Compile failed: ' + res.error);
-          if (pkgTa) pkgTa.value = '';
-          return;
-        }
-        pkg = res.pkg;
-        code = extractCompiledText(pkg);
+        // Last ditch fallback if no pkg (or no buildPackage)
+        // (Existing fallback logic removed as it was redundant/legacy specific)
+        if (!pkg) setStatus('No runtime available or build failed.');
       }
 
       // Write final JS (or fallback) to main output
@@ -500,7 +508,7 @@
       if (!ta) return;
       ta.focus();
       ta.select();
-      try { document.execCommand('copy'); } catch (_e4) {}
+      try { document.execCommand('copy'); } catch (_e4) { }
     };
 
     // Debug toggles

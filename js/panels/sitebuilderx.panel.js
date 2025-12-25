@@ -121,10 +121,14 @@
   // EngineRuntime import (read-only)
   // ---------------------------
   function buildImportedFromBasic(studioState) {
-    if (!root.EngineRuntime || typeof root.EngineRuntime.buildPackage !== 'function') return null;
+    var runtime = root.DataShaper || root.EngineRuntime;
+    if (!runtime || typeof runtime.buildPackage !== 'function') {
+      return null;
+    }
     var order = loadBuildOrder();
     try {
-      return root.EngineRuntime.buildPackage(studioState, { buildOrder: order });
+      var pkg = runtime.buildPackage(studioState, { buildOrder: order });
+      return pkg;
     } catch (_e) {
       return null;
     }

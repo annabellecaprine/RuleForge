@@ -655,125 +655,67 @@
     var json = JSON.stringify(rules);
 
     return ''
-      + "(function(){\n"
-      + "  'use strict';\n"
-      + "  var RULES = " + json + ";\n"
-      + "\n"
-      + "  function get(obj, path){\n"
-      + "    var parts = String(path||'').split('.');\n"
-      + "    var cur = obj;\n"
-      + "    for (var i=0;i<parts.length;i++){\n"
-      + "      if (!cur) return undefined;\n"
-      + "      cur = cur[parts[i]];\n"
-      + "    }\n"
-      + "    return cur;\n"
-      + "  }\n"
-      + "  function set(obj, path, val){\n"
-      + "    var parts = String(path||'').split('.');\n"
-      + "    var cur = obj;\n"
-      + "    for (var i=0;i<parts.length-1;i++){\n"
-      + "      var k = parts[i];\n"
-      + "      if (!cur[k] || typeof cur[k] !== 'object') cur[k] = {};\n"
-      + "      cur = cur[k];\n"
-      + "    }\n"
-      + "    cur[parts[parts.length-1]] = val;\n"
-      + "  }\n"
-      + "  function clampInt(v, lo, hi){\n"
-      + "    v = parseInt(v, 10);\n"
-      + "    if (isNaN(v)) v = lo;\n"
-      + "    if (v < lo) v = lo;\n"
-      + "    if (v > hi) v = hi;\n"
-      + "    return v;\n"
-      + "  }\n"
-      + "  function escapeRegExp(s){\n"
-      + "    return String(s).replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&');\n"
-      + "  }\n"
-      + "  function buildKeywordRegex(word, filters){\n"
-      + "    var base = escapeRegExp(word);\n"
-      + "    var suffix = '';\n"
-      + "    if (filters && filters.allowVariants){ suffix = '(?:s|es|ed|ing)?'; }\n"
-      + "    if (filters && filters.wholeWord){\n"
-      + "      return new RegExp('\\\\b' + base + suffix + '\\\\b', (filters.caseInsensitive ? 'gi' : 'g'));\n"
-      + "    }\n"
-      + "    return new RegExp(base + suffix, (filters.caseInsensitive ? 'gi' : 'g'));\n"
-      + "  }\n"
-      + "  function isNegatedNear(text, idx){\n"
-      + "    var start = idx - 12;\n"
-      + "    if (start < 0) start = 0;\n"
-      + "    var pre = text.slice(start, idx).toLowerCase();\n"
-      + "    return (pre.indexOf(' not ') !== -1) || (pre.indexOf(' no ') !== -1) || (pre.indexOf(' never ') !== -1) ||\n"
-      + "           (/(\\\\bnot\\\\b|\\\\bno\\\\b|\\\\bnever\\\\b)\\\\s+$/.test(pre));\n"
-      + "  }\n"
-      + "  function scoreText(text, keywords, filters){\n"
-      + "    text = String(text==null?'':text);\n"
-      + "    if (!text || !keywords || !keywords.length) return 0;\n"
-      + "    var total = 0;\n"
-      + "    for (var i=0;i<keywords.length;i++){\n"
-      + "      var w = keywords[i];\n"
-      + "      if (!w) continue;\n"
-      + "      var re = buildKeywordRegex(w, filters);\n"
-      + "      var m;\n"
-      + "      re.lastIndex = 0;\n"
-      + "      while ((m = re.exec(text)) !== null){\n"
-      + "        if (filters && filters.skipNegated){\n"
-      + "          if (isNegatedNear(text, m.index)) continue;\n"
-      + "        }\n"
-      + "        total++;\n"
-      + "        if (total > 9999) return total;\n"
-      + "      }\n"
-      + "    }\n"
-      + "    return total;\n"
-      + "  }\n"
-      + "  function getHistoryText(depth){\n"
-      + "    depth = clampInt(depth, 1, 200);\n"
-      + "    var arr = null;\n"
-      + "    if (context && context.chat){\n"
-      + "      if (context.chat.last_messages && context.chat.last_messages.length) arr = context.chat.last_messages;\n"
-      + "      else if (context.chat.messages && context.chat.messages.length) arr = context.chat.messages;\n"
-      + "    }\n"
-      + "    if (!arr || !arr.length) return '';\n"
-      + "    var start = arr.length - depth;\n"
-      + "    if (start < 0) start = 0;\n"
-      + "    var parts = [];\n"
-      + "    for (var i=start;i<arr.length;i++) parts.push(String(arr[i]==null?'':arr[i]));\n"
-      + "    return parts.join('\\n');\n"
-      + "  }\n"
-      + "  function passesRange(count, minV, useMax, maxV){\n"
-      + "    minV = clampInt(minV, 0, 999);\n"
-      + "    maxV = clampInt(maxV, 0, 999);\n"
-      + "    if (count < minV) return false;\n"
-      + "    if (useMax && count > maxV) return false;\n"
-      + "    return true;\n"
-      + "  }\n"
-      + "  function resolveWritePath(targetId){\n"
-      + "    targetId = String(targetId||'character.personality');\n"
-      + "    if (targetId !== 'character.personality' && targetId !== 'character.scenario') targetId = 'character.personality';\n"
-      + "    return 'context.' + targetId;\n"
-      + "  }\n"
-      + "  function appendText(targetPath, text){\n"
-      + "    if (!text) return;\n"
-      + "    var keyPath = String(targetPath).replace(/^context\\./,'');\n"
-      + "    var box = { context: context };\n"
-      + "    var cur = get(box, keyPath);\n"
-      + "    cur = (cur == null) ? '' : String(cur);\n"
-      + "    var add = String(text);\n"
-      + "    var next = cur;\n"
-      + "    if (next && next.length) next += '\\n' + add;\n"
-      + "    else next += add;\n"
-      + "    set(box, keyPath, next);\n"
-      + "  }\n"
-      + "\n"
-      + "  for (var i=0;i<RULES.length;i++){\n"
-      + "    var r = RULES[i];\n"
-      + "    if (!r || r.enabled === false) continue;\n"
-      + "    if (!r.read || r.read.sourceId !== 'historyText.norm') continue;\n"
-      + "    if (!r.match || r.match.type !== 'keywordCountRange') continue;\n"
-      + "    var text = getHistoryText(r.read.messageDepth || 12);\n"
-      + "    var count = scoreText(text, r.match.keywords || [], r.match.filters || {});\n"
-      + "    if (!passesRange(count, r.match.min||0, !!r.match.useMax, r.match.max||0)) continue;\n"
-      + "    appendText(resolveWritePath(r.write && r.write.targetId), (r.write && r.write.text) ? r.write.text : '');\n"
-      + "  }\n"
-      + "})();\n";
+    "(function(){\n" +
+      "  'use strict';\n" +
+      "  var RULES = " + json + ";\n" +
+      "\n" +
+      "  function buildKeywordRegex(word, filters){\n" +
+      "    var base = SBX_R.escRegex(word);\n" +
+      "    var suffix = '';\n" +
+      "    if (filters && filters.allowVariants){ suffix = '(?:s|es|ed|ing)?'; }\n" +
+      "    if (filters && filters.wholeWord){\n" +
+      "      return new RegExp('\\\\b' + base + suffix + '\\\\b', (filters.caseInsensitive ? 'gi' : 'g'));\n" +
+      "    }\n" +
+      "    return new RegExp(base + suffix, (filters.caseInsensitive ? 'gi' : 'g'));\n" +
+      "  }\n" +
+      "  function isNegatedNear(text, idx){\n" +
+      "    var start = idx - 12;\n" +
+      "    if (start < 0) start = 0;\n" +
+      "    var pre = text.slice(start, idx).toLowerCase();\n" +
+      "    return (pre.indexOf(' not ') !== -1) || (pre.indexOf(' no ') !== -1) || (pre.indexOf(' never ') !== -1) ||\n" +
+      "           (/(\\\\bnot\\\\b|\\\\bno\\\\b|\\\\bnever\\\\b)\\\\s+$/.test(pre));\n" +
+      "  }\n" +
+      "  function scoreText(text, keywords, filters){\n" +
+      "    text = String(text==null?'':text);\n" +
+      "    if (!text || !keywords || !keywords.length) return 0;\n" +
+      "    var total = 0;\n" +
+      "    for (var i=0;i<keywords.length;i++){\n" +
+      "      var w = keywords[i];\n" +
+      "      if (!w) continue;\n" +
+      "      var re = buildKeywordRegex(w, filters);\n" +
+      "      var m;\n" +
+      "      re.lastIndex = 0;\n" +
+      "      while ((m = re.exec(text)) !== null){\n" +
+      "        if (filters && filters.skipNegated){\n" +
+      "          if (isNegatedNear(text, m.index)) continue;\n" +
+      "        }\n" +
+      "        total++;\n" +
+      "        if (total > 9999) return total;\n" +
+      "      }\n" +
+      "    }\n" +
+      "    return total;\n" +
+      "  }\n" +
+      "  function passesRange(count, minV, useMax, maxV){\n" +
+      "    minV = SBX_R.clamp(minV, 0, 999);\n" +
+      "    maxV = SBX_R.clamp(maxV, 0, 999);\n" +
+      "    if (count < minV) return false;\n" +
+      "    if (useMax && count > maxV) return false;\n" +
+      "    return true;\n" +
+      "  }\n" +
+      "\n" +
+      "  for (var i=0;i<RULES.length;i++){\n" +
+      "    var r = RULES[i];\n" +
+      "    if (!r || r.enabled === false) continue;\n" +
+      "    if (!r.read || r.read.sourceId !== 'historyText.norm') continue;\n" +
+      "    if (!r.match || r.match.type !== 'keywordCountRange') continue;\n" +
+      "    var text = SBX_R.getLastMsgs(context, r.read.messageDepth || 12);\n" +
+      "    var count = scoreText(text, r.match.keywords || [], r.match.filters || {});\n" +
+      "    if (!passesRange(count, r.match.min||0, !!r.match.useMax, r.match.max||0)) continue;\n" +
+      "    var target = (r.write && r.write.targetId) ? r.write.targetId : 'character.personality';\n" +
+      "    if (target.indexOf('context.') === 0) target = target.replace('context.', '');\n" +
+      "    SBX_R.append(context, target, (r.write && r.write.text) ? r.write.text : '');\n" +
+      "  }\n" +
+      "})();\n";
   }
 
   function updatePreview(rootEl) {

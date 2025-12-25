@@ -176,7 +176,9 @@
     app.blocks = [];
 
     var lb = getBasicLorebookState(studioState);
-    if (!lb || lb.enabled === false || !isArr(lb.entries)) return;
+    if (!lb || lb.enabled === false || !isArr(lb.entries)) {
+      return;
+    }
 
     // import entries -> GLOBAL lists + module blocks
     for (var i = 0; i < lb.entries.length; i++) {

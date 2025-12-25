@@ -529,44 +529,16 @@
 
     return '' +
       "(function(){\n" +
-      "  'use strict';\n" +
-      "  function get(obj, path){\n" +
-      "    var parts = String(path||'').split('.');\n" +
-      "    var cur = obj;\n" +
-      "    for(var i=0;i<parts.length;i++){\n" +
-      "      if(!cur || typeof cur!=='object') return undefined;\n" +
-      "      cur = cur[parts[i]];\n" +
-      "    }\n" +
-      "    return cur;\n" +
-      "  }\n" +
-      "  function set(obj, path, val){\n" +
-      "    var parts = String(path||'').split('.');\n" +
-      "    var cur = obj;\n" +
-      "    for(var i=0;i<parts.length-1;i++){\n" +
-      "      var k = parts[i];\n" +
-      "      if(!cur[k] || typeof cur[k] !== 'object') cur[k] = {};\n" +
-      "      cur = cur[k];\n" +
-      "    }\n" +
-      "    cur[parts[parts.length-1]] = val;\n" +
-      "  }\n" +
-      "  var rules = " + json + ";\n" +
       "  if(!rules || !rules.length) return;\n" +
-      "  var mc = (context && context.chat && typeof context.chat.message_count === 'number') ? context.chat.message_count : 0;\n" +
+      "  if(!context || !context.chat) return;\n" +
+      "  var mc = (typeof context.chat.message_count === 'number') ? context.chat.message_count : 0;\n" +
       "\n" +
       "  for(var i=0;i<rules.length;i++){\n" +
       "    var r = rules[i]; if(!r) continue;\n" +
       "    if(mc < r.min || mc > r.max) continue;\n" +
       "    if(!r.text) continue;\n" +
-      "    var cur = get(context, r.target) || '';\n" +
-      "    cur = String(cur);\n" +
-      "    if(r.once && r.marker && cur.indexOf(r.marker) !== -1) continue;\n" +
-      "    var add = '';\n" +
-      "    if(r.marker) add += r.marker + '\\n';\n" +
-      "    add += r.text + '\\n';\n" +
-      "    var next = cur;\n" +
-      "    if(next && next.length && next.charAt(next.length-1) !== '\\n') next += '\\n';\n" +
-      "    next += add;\n" +
-      "    set(context, r.target, next);\n" +
+      "    var path = String(r.target).replace(/^context\\./,'');\n" +
+      "    SBX_R.append(context, path, r.text, r.marker, r.once);\n" +
       "  }\n" +
       "})();\n";
   }

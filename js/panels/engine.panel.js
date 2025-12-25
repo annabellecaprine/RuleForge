@@ -666,11 +666,11 @@
 
         var dlBtn = $('eng-dl-package');
         if (dlBtn) dlBtn.onclick = function () {
-          if (root.DataShaper && typeof root.DataShaper.downloadPackage === 'function') {
+          var runtime = root.DataShaper || root.EngineRuntime;
+          if (runtime && typeof runtime.downloadPackage === 'function') {
             try {
-              root.DataShaper.downloadPackage(studioState, { buildOrder: normalizeOrder(order) });
-              return;
-            } catch (_e2) { }
+              runtime.downloadPackage(studioState, { buildOrder: normalizeOrder(order) });
+            } catch (e) { console.error("DL failed", e); }
           }
         };
       }
@@ -679,20 +679,59 @@
         var ta = $('eng-code');
         if (!ta) return;
 
-        if (root.DataShaper && typeof root.DataShaper.buildCodePreview === 'function') {
-          try {
-            ta.value = String(root.DataShaper.buildCodePreview(studioState, {
-              buildOrder: normalizeOrder(order),
-              includeDisabled: false,
-              includeDslAsJson: true
-            }) || '');
-            return;
-          } catch (_e) { }
+        var runtime = root.DataShaper || root.EngineRuntime;
+
+        if (!runtime) {
+          ta.value = '// No runtime found (DataShaper or EngineRuntime).\n// Check that export.core.js is loaded.';
+          return;
         }
 
-        ta.value =
-          '// Missing DataShaper.buildCodePreview().\n' +
-          '// Ensure js/core/export.core.js is loaded and exposes DataShaper.';
+        var opts = {
+          buildOrder: normalizeOrder(order),
+          includeDisabled: false,
+          includeDslAsJson: true
+        };
+
+        // 1. Try official convenience method (DataShaper.buildCodePreview)
+        if (typeof runtime.buildCodePreview === 'function') {
+          try {
+            var res = runtime.buildCodePreview(studioState, opts);
+            ta.value = String(res || '// buildCodePreview returned empty string');
+            return;
+          } catch (e1) {
+            // Fall through to try manual pipeline if this fails (rare but possible if API mismatch)
+            console.error("Basic Engine: buildCodePreview failed", e1);
+            ta.value = '// Error in buildCodePreview:\n// ' + String(e1);
+            // Don't return, try manual pipeline? No, manual pipeline uses same internals usually.
+            // Just return error to show user.
+            return;
+          }
+        }
+
+        // 2. Try manual pipeline (Legacy EngineRuntime or partial DataShaper)
+        if (typeof runtime.buildPackage === 'function') {
+          try {
+            var pkg = runtime.buildPackage(studioState, opts);
+
+            // Render
+            if (typeof runtime.renderPackageCode === 'function') {
+              ta.value = runtime.renderPackageCode(pkg, opts) || '// renderPackageCode returned empty';
+            } else if (typeof runtime.buildAdvancedScript === 'function') {
+              // EngineRuntime legacy fallback
+              ta.value = runtime.buildAdvancedScript(studioState, opts) || '// buildAdvancedScript returned empty';
+            } else {
+              // Just JSON dump if no renderer
+              ta.value = '// No code renderer found. Package IR:\n' + JSON.stringify(pkg, null, 2);
+            }
+            return;
+          } catch (e2) {
+            console.error("Basic Engine: Manual pipeline failed", e2);
+            ta.value = '// Error in manual pipeline:\n// ' + String(e2);
+            return;
+          }
+        }
+
+        ta.value = '// Runtime exists but has no build methods.\n// Keys: ' + Object.keys(runtime).join(', ');
       }
 
       function runPipeline(doEval) {

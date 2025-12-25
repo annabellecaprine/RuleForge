@@ -94,8 +94,9 @@
 
   function tryCountWarnings() {
     try {
-      if (!root.EngineRuntime || typeof root.EngineRuntime.buildPackage !== 'function') return 0;
-      var pkg = root.EngineRuntime.buildPackage(getStudioState(), { silent: true });
+      var runtime = root.DataShaper || root.EngineRuntime;
+      if (!runtime || typeof runtime.buildPackage !== 'function') return 0;
+      var pkg = runtime.buildPackage(getStudioState(), { silent: true });
       if (!pkg || !pkg.warnings) return 0;
       return pkg.warnings.length || 0;
     } catch (_e) {
